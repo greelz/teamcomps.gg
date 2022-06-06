@@ -1,0 +1,5 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+/__pycache__
+/helpers/__pycache__
+/helpers/secrets.py

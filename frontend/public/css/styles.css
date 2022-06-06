@@ -1,0 +1,397 @@
+.clr-primary-100 {
+  background-color: #c33c55;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-100 {
+  background-color: #c33c55;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-100:hover {
+  background-color: #b0364c;
+}
+
+.clr-primary-200 {
+  background-color: #9c3044;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-200 {
+  background-color: #9c3044;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-200:hover {
+  background-color: #892a3b;
+}
+
+.clr-primary-300 {
+  background-color: #752433;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-300 {
+  background-color: #752433;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-300:hover {
+  background-color: #621e2a;
+}
+
+.clr-primary-400 {
+  background-color: #4e1822;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-400 {
+  background-color: #4e1822;
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-400:hover {
+  background-color: #3b1219;
+}
+
+.clr-secondary-100 {
+  background-color: #254e6f;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-100 {
+  background-color: #254e6f;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-100:hover {
+  background-color: #1f405c;
+}
+
+.clr-secondary-200 {
+  background-color: #1c3b54;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-200 {
+  background-color: #1c3b54;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-200:hover {
+  background-color: #162e41;
+}
+
+.clr-secondary-300 {
+  background-color: #112332;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-300 {
+  background-color: #112332;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-300:hover {
+  background-color: #0a151f;
+}
+
+.clr-secondary-400 {
+  background-color: #0a151f;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-400 {
+  background-color: #0a151f;
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-400:hover {
+  background-color: #04080b;
+}
+
+.clr-tertiary-100 {
+  background-color: #38728f;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-100 {
+  background-color: #38728f;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-100:hover {
+  background-color: #31637d;
+}
+
+.clr-tertiary-200 {
+  background-color: #29556a;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-200 {
+  background-color: #29556a;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-200:hover {
+  background-color: #224658;
+}
+
+.clr-tertiary-300 {
+  background-color: #1b3846;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-300 {
+  background-color: #1b3846;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-300:hover {
+  background-color: #142933;
+}
+
+.clr-tertiary-400 {
+  background-color: #0d1a21;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-400 {
+  background-color: #0d1a21;
+  color: white;
+  border-color: white;
+}
+
+.btn-tertiary-400:hover {
+  background-color: #060c0f;
+}
+
+.clr-accent1-100 {
+  background-color: #8fe4ef;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent1-100 {
+  background-color: #8fe4ef;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent1-100:hover {
+  background-color: #79deec;
+}
+
+.clr-accent1-200 {
+  background-color: #36cee2;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent1-200 {
+  background-color: #36cee2;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent1-200:hover {
+  background-color: #20c9df;
+}
+
+.clr-accent1-300 {
+  background-color: #168d9c;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent1-300 {
+  background-color: #168d9c;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent1-300:hover {
+  background-color: #137886;
+}
+
+.clr-accent1-400 {
+  background-color: #106470;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent1-400 {
+  background-color: #106470;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent1-400:hover {
+  background-color: #0d5059;
+}
+
+.clr-accent2-100 {
+  background-color: #aff3e8;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent2-100 {
+  background-color: #aff3e8;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent2-100:hover {
+  background-color: #99f0e1;
+}
+
+.clr-accent2-200 {
+  background-color: #56e6ce;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent2-200 {
+  background-color: #56e6ce;
+  color: black;
+  border-color: black;
+}
+
+.btn-accent2-200:hover {
+  background-color: #40e2c7;
+}
+
+.clr-accent2-300 {
+  background-color: #1ec8ab;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent2-300 {
+  background-color: #1ec8ab;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent2-300:hover {
+  background-color: #1bb198;
+}
+
+.clr-accent2-400 {
+  background-color: #116f5f;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent2-400 {
+  background-color: #116f5f;
+  color: white;
+  border-color: white;
+}
+
+.btn-accent2-400:hover {
+  background-color: #0d594c;
+}
+
+input[type="button"] {
+  font-size: medium;
+  margin: 0;
+  padding: 0.25em 1em;
+  cursor: default;
+  white-space: pre;
+  text-align: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 3px;
+  border: 1px solid;
+  min-width: 3ch;
+}
+
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  height: 90px;
+  background-color: clr(primary, dark);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: white;
+  font-size: x-large;
+  border-bottom: 1px solid;
+}
+
+header li {
+  display: inline-block;
+  padding: 0 1em;
+}
+
+footer {
+  border-top: 1px solid;
+  font-size: x-small;
+  text-align: center;
+  padding: 20px 0 10px 0;
+}
+
+.container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+/*# sourceMappingURL=styles.css.map */

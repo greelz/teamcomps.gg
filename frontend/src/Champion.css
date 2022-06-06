@@ -1,0 +1,10 @@
+._champion {
+    height: 50px;
+    width: 50px;
+    margin: 1.5em;
+}
+
+._champion > img {
+    height: 50px;
+    width: 50px;
+}

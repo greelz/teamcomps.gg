@@ -1,0 +1,11 @@
+._selectedChampions {
+  max-width: 400px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+._selectedChampions > :not(:last-child) {
+  border-bottom: 1px solid black;
+}

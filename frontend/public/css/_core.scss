@@ -1,0 +1,38 @@
+
+$headerHeight: 90px;
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+header {
+  height: $headerHeight;
+  background-color: clr(primary, dark);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: x-large;
+  border-bottom: 1px solid;
+
+  li {
+    display: inline-block;
+    padding: 0 1em;
+  }
+}
+
+footer {
+  border-top: 1px solid;
+  font-size: x-small;
+  text-align: center;
+  padding: 20px 0 10px 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
