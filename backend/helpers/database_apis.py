@@ -1,10 +1,10 @@
 from datetime import datetime
 from math import prod
 from typing import Iterator, TypeVar, Union
-from helpers.secrets import conn_string
+from backend.helpers.secrets import conn_string
 import psycopg2
 from psycopg2 import sql
-from helpers.api_classes import QueueType
+from backend.helpers.api_classes import QueueType
 
 
 T = TypeVar('T')
@@ -117,20 +117,6 @@ def insert_into_index_tables(winners, losers, cur):
         [cur.execute(loss_query, [prod(id)]) for id in get_combinations(i, losers_prime)]
 
 
-
-def add_champion(internalName, id, prettyName, primeId):
-    with psycopg2.connect(conn_string) as conn:
-        # Open a cursor to perform database operations
-        with conn.cursor() as cur:
-            # Execute a command: this creates a new table
-            cur.execute("""
-                INSERT INTO champions (id, primeid, internalname, prettyname) 
-                VALUES (%s, %s, %s, %s)
-            """, 
-                (id, primeId, internalName, prettyName))
-
-            # Make the changes to the database persistent
-            conn.commit()
 
 
 def add_summoner(puuid):
