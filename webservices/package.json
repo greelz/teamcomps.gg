@@ -4,7 +4,7 @@
   "description": "Services for teamcomp that connect the frontend to the backend",
   "main": "champQueryServices.js",
   "scripts": {
-    "start": "tsc --watch && nodemon dist/app.js",
+    "start": "ts-node ./app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,7 +14,8 @@
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
-    "pg": "^8.7.3"
+    "pg": "^8.7.3",
+    "typescript": "^4.7.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

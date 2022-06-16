@@ -1,0 +1,53 @@
+$colors: (
+  primary: (
+    100: hsl(220, 100%, 75%),
+    200: hsl(220, 100%, 55%),
+    300: hsl(220, 100%, 35%),
+    380: hsl(220, 100%, 15%),
+    400: hsl(220, 100%, 10%),
+  ),
+  secondary: (
+    100: hsl(16, 53%, 77%),
+    200: hsl(16, 53%, 57%),
+    300: hsl(16, 53%, 34%),
+  ),
+  accent: (
+    100: hsl(345, 40%, 33%),
+    200: hsl(345, 40%, 23%),
+  ),
+);
+
+@mixin oppositeBgColor($bgColor) {
+  @if lightness($bgColor) < 51 {
+    color: white;
+    border-color: white;
+  } @else {
+    color: black;
+    border-color: black;
+  }
+}
+
+:root {
+  @each $colorName, $color in $colors {
+    @each $shade, $value in $color {
+      --clr-#{$colorName}-#{$shade}: #{$value};
+    }
+  }
+}
+
+@each $colorName, $color in $colors {
+  @each $shade, $value in $color {
+    .clr-#{$colorName}-#{$shade} {
+      background-color: $value;
+      @include oppositeBgColor($value);
+    }
+
+    .btn-#{$colorName}-#{$shade} {
+      background-color: $value;
+      @include oppositeBgColor($value);
+    }
+    .btn-#{$colorName}-#{$shade}:hover {
+      background-color: darken($value, 5);
+    }
+  }
+}

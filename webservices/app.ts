@@ -52,7 +52,8 @@ app.get("/api/getWinningPercentage", async function (req, res) {
   const result = await getWinningPercentage(prodNum, num);
   if (result) {
     res.send({
-      winPercentage: (result * 100).toPrecision(3),
+      winPercentage: (result[0] * 100).toPrecision(3),
+      games: result[1]
     });
   }
   else {
@@ -65,14 +66,14 @@ app.get("/api/getChampList", async function (_request, res) {
     res.send(response.rows);
 });
 
-function getWinningPercentage(product: number, numChamps: number): Promise<number> | undefined {
+function getWinningPercentage(product: number, numChamps: number): Promise<[number, number]> | undefined {
   if (numChamps < 1 || numChamps > 5) return;
   if (product < 3) return;
   const tableNames = ['singles', 'doubles', 'triples', 'quads', 'quints'];
   const tableName = tableNames[numChamps - 1];
 
   var query = {
-    text: `SELECT CAST(wins as FLOAT) / (wins + losses) AS WinPct FROM ${tableName} WHERE primeid = $1`,
+    text: `SELECT wins + losses as numGames, CAST(wins as FLOAT) / (wins + losses) AS WinPct FROM ${tableName} WHERE primeid = $1`,
     values: [product],
   };
 
@@ -82,11 +83,11 @@ function getWinningPercentage(product: number, numChamps: number): Promise<numbe
       .then((res) => {
         console.log(query);
         if (res.rowCount > 0) {
-          resolve(res.rows[0]["winpct"]);
+          resolve([res.rows[0]["winpct"], res.rows[0]['numgames']]);
           return;
         }
         else {
-          resolve(-1);
+          resolve([-1, -1]);
         }
       })
       .catch((e) => console.error(e.stack));

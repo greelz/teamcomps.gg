@@ -1,11 +1,9 @@
-from inspect import Attribute
 import json
-from multiprocessing import Value
 import time
 from typing import Iterator, Union
 import requests
-from helpers.api_classes import *
-from helpers.secrets import riot_api_key
+from backend.helpers.api_classes import *
+from backend.helpers.secrets import riot_api_key
 
 # Don't commit this key to github, make it a private variable on github
 rate_limit_10_seconds = 500
@@ -15,10 +13,10 @@ requests_in_last_minute = 0
 
 #region League-V4 
 # Top 300 players
-def _get_challenger_leagues(queue: Queue) -> Iterator[LeagueItemDto]:
+def _get_challenger_leagues(queue: Queue, region: Region = Region.NorthAmerica) -> Iterator[LeagueItemDto]:
     url = '/lol/league/v4/challengerleagues/by-queue/{queue}'.format(queue = queue.name)
     try:
-        response = json.loads(__do_riot_request(url).content)
+        response = json.loads(__do_riot_request(url, None, region.value[0]).content)
     except AttributeError:
         yield []
     else:
@@ -27,10 +25,10 @@ def _get_challenger_leagues(queue: Queue) -> Iterator[LeagueItemDto]:
 
 
 # 301-1000 best players
-def _get_grandmaster_leagues(queue: Queue) -> Iterator[LeagueItemDto]:
+def _get_grandmaster_leagues(queue: Queue, region: Region = Region.NorthAmerica) -> Iterator[LeagueItemDto]:
     url = '/lol/league/v4/grandmasterleagues/by-queue/{queue}'.format(queue = queue.name)
     try:
-        response = json.loads(__do_riot_request(url).content)
+        response = json.loads(__do_riot_request(url, None, region.value[0]).content)
     except AttributeError:
         yield []
     else:
@@ -38,23 +36,23 @@ def _get_grandmaster_leagues(queue: Queue) -> Iterator[LeagueItemDto]:
             yield LeagueItemDto(**entry)
 
 # 1001-~4500 best players
-def _get_master_leagues(queue: Queue) -> Iterator[LeagueItemDto]:
+def _get_master_leagues(queue: Queue, region: Region = Region.NorthAmerica) -> Iterator[LeagueItemDto]:
     url = '/lol/league/v4/masterleagues/by-queue/{queue}'.format(queue = queue.name)
     try:
-        response = json.loads(__do_riot_request(url).content)
+        response = json.loads(__do_riot_request(url, None, region.value[0]).content)
     except AttributeError:
         yield []
     else:
         for entry in response['entries']:
             yield LeagueItemDto(**entry)
 
-def get_all_players_in_division(queue: Queue, tier: Tier, division: Division) -> Iterator[LeagueEntryDto]:
+def get_all_players_in_division(queue: Queue, tier: Tier, division: Division, region: Region = Region.NorthAmerica) -> Iterator[LeagueEntryDto]:
     url = '/lol/league/v4/entries/{queue}/{division}/{tier}'.format(queue = queue.name, tier = tier.name, division = division.name)
     keep_going = True
     page = 1
     while keep_going:
         try:
-            response = json.loads(__do_riot_request(url, [('page', str(page))], "https://kr.api.riotgames.com").content)
+            response = json.loads(__do_riot_request(url, [('page', str(page))], region.value[0]).content)
         except AttributeError:
             yield []
         else:
@@ -67,10 +65,10 @@ def get_all_players_in_division(queue: Queue, tier: Tier, division: Division) ->
 
 
 
-def _get_players_in_division(queue: Queue, tier: Tier, division: Division, page: int) -> Iterator[LeagueEntryDto]:
+def _get_players_in_division(queue: Queue, tier: Tier, division: Division, page: int, region: Region = Region.NorthAmerica) -> Iterator[LeagueEntryDto]:
     url = '/lol/league/v4/entries/{queue}/{division}/{tier}'.format(queue = queue.name, tier = tier.name, division = division.name)
     try:
-        response = json.loads(__do_riot_request(url, [('page', str(page))]).content)
+        response = json.loads(__do_riot_request(url, [('page', str(page))], region.value[0]).content)
     except AttributeError:
         yield []
     else:
@@ -80,43 +78,43 @@ def _get_players_in_division(queue: Queue, tier: Tier, division: Division, page:
 #endregion
 
 #region Summoner-V4
-def _get_puuid_by_name(summoner_name: str) -> Union[str, None]:
-    name = get_summoner_info_by_name(summoner_name)
+def _get_puuid_by_name(summoner_name: str, region: Region = Region.NorthAmerica) -> Union[str, None]:
+    name = get_summoner_info_by_name(summoner_name, region)
     if name is not None:
         return name.puuid
     return None
 
-def get_summoner_info_by_name(summoner_name) -> SummonerDto:
+def get_summoner_info_by_name(summoner_name, region: Region = Region.NorthAmerica) -> SummonerDto:
     url = '/lol/summoner/v4/summoners/by-name/{summonerName}'.format(summonerName = summoner_name)
-    response = __do_riot_request(url, None, "https://kr.api.riotgames.com")
+    response = __do_riot_request(url, None, region.value[0])
     if response is not None and response.status_code == 200:
         return SummonerDto(**json.loads(response.content))
     else:
         print("Error getting summoner {}".format(summoner_name))
         return None
 
-def _get_summoner_by_account_id(encrypted_account_id) -> SummonerDto:
+def _get_summoner_by_account_id(encrypted_account_id, region: Region = Region.NorthAmerica) -> SummonerDto:
     url = '/lol/summoner/v4/summoners/by-account/{encryptedAccountId}'.format(encryptedAccountId = encrypted_account_id)
     try:
-        response = json.loads(__do_riot_request(url).content)
+        response = json.loads(__do_riot_request(url, None, region.value[0]).content)
     except AttributeError:
         return None
     else:
         return SummonerDto(**response)
 
-def _get_summoner_by_puuid(encrypted_puuid) -> SummonerDto:
+def _get_summoner_by_puuid(encrypted_puuid, region: Region = Region.NorthAmerica) -> SummonerDto:
     url = '/lol/summoner/v4/summoners/by-puuid/{encryptedPUUID}'.format(encryptedPUUID = encrypted_puuid)
     try:
-        response = json.loads(__do_riot_request(url).content)
+        response = json.loads(__do_riot_request(url, None, region.value[0]).content)
     except AttributeError:
         return None
     else:
         return SummonerDto(**response)
 
-def _get_summoner_by_summoner_id(encrypted_summoner_id) -> SummonerDto:
+def _get_summoner_by_summoner_id(encrypted_summoner_id, region: Region = Region.NorthAmerica) -> SummonerDto:
     url = '/lol/summoner/v4/summoners/{encryptedSummonerId}'.format(encryptedSummonerId = encrypted_summoner_id)
     try:
-        response = json.loads(__do_riot_request(url).content)
+        response = json.loads(__do_riot_request(url, None, region.value[0]).content)
     except AttributeError:
         return None
     else:
@@ -125,34 +123,34 @@ def _get_summoner_by_summoner_id(encrypted_summoner_id) -> SummonerDto:
 #endregion
 
 #region Champion-Mastery-V4
-def _get_champion_mastery(encrypted_summoner_id) -> ChampionMasteryDto:
+def _get_champion_mastery(encrypted_summoner_id, region: Region = Region.NorthAmerica) -> ChampionMasteryDto:
     url = '/lol/champion-mastery/v4/champion-masteries/by-summoner/{encryptedSummonerId}'.format(encryptedSummonerId = encrypted_summoner_id)
-    response = json.loads(__do_riot_request(url).content)
+    response = json.loads(__do_riot_request(url, None, region.value[0]).content)
     return ChampionMasteryDto(**response)
 
-def _get_total_champion_mastery(encrypted_summoner_id) -> int:
+def _get_total_champion_mastery(encrypted_summoner_id, region: Region = Region.NorthAmerica) -> int:
     url = '/lol/champion-mastery/v4/scores/by-summoner/{encryptedSummonerId}'.format(encryptedSummonerId = encrypted_summoner_id)
-    return json.loads(__do_riot_request(url).content)
+    return json.loads(__do_riot_request(url, None, region.value[0]).content)
 
 #endregion
 
 #region Match-V5
 def _get_matches_by_puuid(puuid: str, start_game_index: int = 0, num_games: int = 100, 
-    queue: QueueType = QueueType.Ranked5v5, start_time: float = None) -> list[str]:
+    queue: QueueType = QueueType.Ranked5v5, start_time: float = None, region: Region = Region.NorthAmerica) -> list[str]:
     url = '/lol/match/v5/matches/by-puuid/{puuid}/ids'.format(puuid = puuid)
     query_args = [('start', str(start_game_index)), ('count', str(num_games)), ('queue', queue.value)]
     if start_time is not None:
         query_args.append(('startTime', start_time))
-    response = __do_riot_request(url, query_args, 'https://asia.api.riotgames.com')
+    response = __do_riot_request(url, query_args, region.value[1])
     if response is not None and response.status_code == 200:
         return json.loads(response.content)
     else:
         print("Error getting matches by puuid {}, {}, {}".format(puuid, start_game_index, num_games))
 
-def _get_match(match_id) -> MatchDto:
+def _get_match(match_id, region: Region) -> MatchDto:
     url = '/lol/match/v5/matches/{matchId}'.format(matchId = match_id)
     try:
-        response = json.loads(__do_riot_request(url, None, 'https://asia.api.riotgames.com').content)
+        response = json.loads(__do_riot_request(url, None, region.value[1]).content)
     except AttributeError:
         return None
     else:
@@ -166,24 +164,7 @@ def _get_match(match_id) -> MatchDto:
 
 #region Core Request
 
-def __pause_requests_if_necessary():
-    # Every minute, we'll check how many requests we've made and pause for a minute if
-    # we've made more than our limit (which will probably never happen)
-    global requests_in_last_minute, timer_start
-    requests_in_last_minute += 1
-    if timer_start == 0:
-        timer_start = time.time() # current time in seconds
-        return
-    elif time.time() - 60 > timer_start:
-        print("We've made {0} requests in the last minute.".format(requests_in_last_minute))
-        if requests_in_last_minute > rate_limit_10_seconds * 6:
-            print("Pausing for a minute.")
-            time.sleep(60)
-        requests_in_last_minute = 0
-        timer_start = time.time()
-
 def __do_riot_request(url: str, query_parameters: list[tuple] = None, url_start = 'https://na1.api.riotgames.com') -> requests.Response:
-    # Don't keep track of this right now because it's not necessary 
     headers = { 
         'X-Riot-Token': riot_api_key
     }
@@ -201,40 +182,41 @@ def __do_riot_request(url: str, query_parameters: list[tuple] = None, url_start 
         url = url[:-1]
 
     try:
-        response = requests.get(url_start + url, headers = headers)
+        req_url = url_start + url
+        response = requests.get(req_url, headers = headers)
         if response.status_code == 429:
             print('Rate limit exceeded. Sleeping for 2 mins.')
             time.sleep(2 * 60)
         return response
     except requests.exceptions.ConnectionError as e:
-        print('Error handling {}\n{}'.format(url_start + url, e))
+        print('Error handling {}\n{}'.format(req_url, e))
         return None
 #endregion
 
 #region Public APIs
 
-def get_all_games_for_puuid(puuid: str, queue_type: QueueType = QueueType.Ranked5v5, start_time: float = None):
+def get_all_games_for_puuid(puuid: str, queue_type: QueueType = QueueType.Ranked5v5, start_time: float = None, region: Region = Region.NorthAmerica):
     current_game_idx = 0
     num_games_at_a_time = 100
     keep_going = True
     while keep_going:
         next_index = current_game_idx + num_games_at_a_time
-        match_list = _get_matches_by_puuid(puuid, current_game_idx, next_index - current_game_idx, queue_type, start_time)
+        match_list = _get_matches_by_puuid(puuid, current_game_idx, next_index - current_game_idx, queue_type, start_time, region)
         current_game_idx = next_index
         if match_list is None or len(match_list) == 0:
             keep_going = False
             break
         else:
             for match in match_list:
-                yield _get_match(match)
+                yield _get_match(match, region)
 
-def get_all_match_ids_for_puuid(puuid: str, queue_type: QueueType = QueueType.Ranked5v5, start_time: float = None):
+def get_all_match_ids_for_puuid(puuid: str, queue_type: QueueType = QueueType.Ranked5v5, start_time: float = None, region: Region = Region.NorthAmerica):
     current_game_idx = 0
     num_games_at_a_time = 100
     keep_going = True
     while keep_going:
         next_index = current_game_idx + num_games_at_a_time
-        match_list = _get_matches_by_puuid(puuid, current_game_idx, next_index - current_game_idx, queue_type, start_time)
+        match_list = _get_matches_by_puuid(puuid, current_game_idx, next_index - current_game_idx, queue_type, start_time, region)
         current_game_idx = next_index
         if match_list is None or len(match_list) == 0:
             keep_going = False
@@ -243,29 +225,29 @@ def get_all_match_ids_for_puuid(puuid: str, queue_type: QueueType = QueueType.Ra
             for match in match_list:
                 yield match
 
-def get_all_games_for_summoner(summoner_name: str, queue_type: QueueType = QueueType.Ranked5v5, start_time: float = None):
-    puuid = _get_puuid_by_name(summoner_name)
+def get_all_games_for_summoner(summoner_name: str, queue_type: QueueType = QueueType.Ranked5v5, start_time: float = None, region: Region = Region.NorthAmerica):
+    puuid = _get_puuid_by_name(summoner_name, region)
     if puuid is not None:
-        for game in get_all_games_for_puuid(puuid, queue_type, start_time):
+        for game in get_all_games_for_puuid(puuid, queue_type, start_time, region):
             yield game
     yield []
 
-def get_latest_n_games_for_summoner(summoner_name: str, num_games: int, queue_type: QueueType = QueueType.Ranked5v5) -> Iterator[MatchDto]:
+def get_latest_n_games_for_summoner(summoner_name: str, num_games: int, queue_type: QueueType = QueueType.Ranked5v5, region: Region = Region.NorthAmerica) -> Iterator[MatchDto]:
     current_game_idx = 0
     num_games_at_a_time = 100
-    puuid = _get_puuid_by_name(summoner_name)
+    puuid = _get_puuid_by_name(summoner_name, region)
     if puuid is None:
         return []
     stop = False
     while current_game_idx < num_games and not stop:
         next_index = min(num_games, current_game_idx + num_games_at_a_time)
-        match_list = _get_matches_by_puuid(puuid, current_game_idx, next_index - current_game_idx, queue_type)
+        match_list = _get_matches_by_puuid(puuid, current_game_idx, next_index - current_game_idx, queue_type, region)
         current_game_idx = next_index
         if match_list is None or len(match_list) == 0:
             stop = True
         else:
             for match in match_list:
-                yield _get_match(match)
+                yield _get_match(match, region)
 
 def get_match_results(match: MatchDto):
     if match is None or match.info is None or match.info.participants is None:

@@ -1,0 +1,164 @@
+@use "siteColors";
+@use "elements";
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--clr-primary-400);
+  color: white;
+}
+
+#root {
+  height: 100%;
+}
+
+._root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+._container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+._page {
+  padding: 30px;
+  margin: 10px;
+  border-radius: 10px;
+  flex-grow: 1;
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+header,
+footer {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+header {
+  border-bottom: 1px solid;
+}
+
+footer {
+  border-top: 1px solid;
+}
+
+._winPercentContainer {
+  font-size: 4em;
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  span {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: small;
+  }
+}
+
+._champions {
+  margin: auto;
+  height: 600px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  overflow-x: hidden;
+  justify-content: center;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: var(--clr-secondary-100);
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--clr-secondary-200);
+  }
+}
+
+._champion {
+  padding: 10px;
+  width: 75px;
+  display: flex;
+  flex-direction: column;
+  margin: 5px 1px;
+  text-align: center;
+  font-size: small;
+  &:hover {
+    background-color: var(--clr-secondary-100);
+    color: black;
+    cursor: pointer;
+  }
+}
+
+._champion > img {
+  height: 50px;
+  width: 50px;
+  align-self: center;
+}
+
+._selectedChampions {
+  flex: 1 0 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+._selectedChampion {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+
+  ._blank,
+  img {
+    flex: 0 0 100px;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    display: flex;
+    margin-right: 15px;
+  }
+
+  ._rightContent {
+    flex: 1;
+  }
+
+  ._blank {
+    border: 1px solid;
+  }
+
+  ._xButton {
+    position: absolute;
+    top: 0; 
+    right: 0;
+
+  }
+}

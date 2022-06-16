@@ -285,3 +285,16 @@ class Division(Enum):
     SILVER = "SILVER"
     BRONZE = "BRONZE"
     IRON = "IRON"
+
+class Region(Enum):
+    EuNorth = ("https://eun1.api.riotgames.com", "https://europe.api.riotgames.com")
+    Brazil = ("https://br1.api.riotgames.com", "https://americas.api.riotgames.com")
+    EuWest = ("https://euw1.api.riotgames.com", "https://europe.api.riotgames.com")
+    Japan = ("https://jp1.api.riotgames.com", "https://asia.api.riotgames.com")
+    Korea = ("https://kr.api.riotgames.com", "https://asia.api.riotgames.com")
+    Latinamerica = ("https://la1.api.riotgames.com", "https://americas.api.riotgames.com")
+    Latinamerica2 = ("https://la2.api.riotgames.com", "https://americas.api.riotgames.com")
+    NorthAmerica = ("https://na1.api.riotgames.com", "https://americas.api.riotgames.com")
+    Oceania = ("https://oc1.api.riotgames.com", "https://asia.api.riotgames.com")
+    Russia = ("https://ru.api.riotgames.com", "https://asia.api.riotgames.com")
+    Turkey = ("https://tr1.api.riotgames.com", "https://asia.api.riotgames.com")

@@ -1,5 +1,4 @@
 import React, { MouseEventHandler } from "react";
-import "./Champion.css";
 import { IChampionTableData } from "./Interfaces";
 
 function importAll(r: __WebpackModuleApi.RequireContext) {

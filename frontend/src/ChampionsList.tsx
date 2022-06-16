@@ -1,6 +1,6 @@
 import React from "react";
 import Champion from "./Champion";
-import { ChampionName, IChampionTableData, ILeagueData } from "./Interfaces";
+import { IChampionTableData } from "./Interfaces";
 
 interface IChampionsListProps {
   championData: IChampionTableData[];

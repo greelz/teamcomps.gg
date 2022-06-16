@@ -1,11 +1,11 @@
 import React from "react";
 import { ChampionName } from "./Interfaces";
-import "./SelectedChampion.css";
 
 interface ISelectedChampionProps {
   name: ChampionName | undefined | null;
   description: string;
   role: string;
+  onClickX: Function;
 }
 
 function importAll(r: __WebpackModuleApi.RequireContext) {
@@ -23,6 +23,7 @@ export default function SelectedChampion({
   name,
   description,
   role,
+  onClickX
 }: ISelectedChampionProps) {
   if (name) {
     return (
@@ -33,12 +34,14 @@ export default function SelectedChampion({
           <div className="_description">{description}</div>
           <div className="_role">{role}</div>
         </div>
+        <div onClick={() => onClickX()} className="_xButton">X</div>
       </div>
     );
   } else {
     return (
-      <div className="_selectedChampion _blank">
-        <img alt="Empty placeholder"></img>
+      <div className="_selectedChampion">
+        <div className="_blank"></div>
+        <div className="_rightContent"></div>
       </div>
     );
   }

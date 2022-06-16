@@ -1,0 +1,336 @@
+:root {
+  --clr-primary-100: hsl(220deg, 100%, 75%);
+  --clr-primary-200: hsl(220deg, 100%, 55%);
+  --clr-primary-300: hsl(220deg, 100%, 35%);
+  --clr-primary-380: hsl(220deg, 100%, 15%);
+  --clr-primary-400: hsl(220deg, 100%, 10%);
+  --clr-secondary-100: hsl(16deg, 53%, 77%);
+  --clr-secondary-200: hsl(16deg, 53%, 57%);
+  --clr-secondary-300: hsl(16deg, 53%, 34%);
+  --clr-accent-100: hsl(345deg, 40%, 33%);
+  --clr-accent-200: hsl(345deg, 40%, 23%);
+}
+
+.clr-primary-100 {
+  background-color: hsl(220deg, 100%, 75%);
+  color: black;
+  border-color: black;
+}
+
+.btn-primary-100 {
+  background-color: hsl(220deg, 100%, 75%);
+  color: black;
+  border-color: black;
+}
+
+.btn-primary-100:hover {
+  background-color: #6699ff;
+}
+
+.clr-primary-200 {
+  background-color: hsl(220deg, 100%, 55%);
+  color: black;
+  border-color: black;
+}
+
+.btn-primary-200 {
+  background-color: hsl(220deg, 100%, 55%);
+  color: black;
+  border-color: black;
+}
+
+.btn-primary-200:hover {
+  background-color: #0055ff;
+}
+
+.clr-primary-300 {
+  background-color: hsl(220deg, 100%, 35%);
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-300 {
+  background-color: hsl(220deg, 100%, 35%);
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-300:hover {
+  background-color: #003399;
+}
+
+.clr-primary-380 {
+  background-color: hsl(220deg, 100%, 15%);
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-380 {
+  background-color: hsl(220deg, 100%, 15%);
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-380:hover {
+  background-color: #001133;
+}
+
+.clr-primary-400 {
+  background-color: hsl(220deg, 100%, 10%);
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-400 {
+  background-color: hsl(220deg, 100%, 10%);
+  color: white;
+  border-color: white;
+}
+
+.btn-primary-400:hover {
+  background-color: #00091a;
+}
+
+.clr-secondary-100 {
+  background-color: hsl(16deg, 53%, 77%);
+  color: black;
+  border-color: black;
+}
+
+.btn-secondary-100 {
+  background-color: hsl(16deg, 53%, 77%);
+  color: black;
+  border-color: black;
+}
+
+.btn-secondary-100:hover {
+  background-color: #dda692;
+}
+
+.clr-secondary-200 {
+  background-color: hsl(16deg, 53%, 57%);
+  color: black;
+  border-color: black;
+}
+
+.btn-secondary-200 {
+  background-color: hsl(16deg, 53%, 57%);
+  color: black;
+  border-color: black;
+}
+
+.btn-secondary-200:hover {
+  background-color: #c56644;
+}
+
+.clr-secondary-300 {
+  background-color: hsl(16deg, 53%, 34%);
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-300 {
+  background-color: hsl(16deg, 53%, 34%);
+  color: white;
+  border-color: white;
+}
+
+.btn-secondary-300:hover {
+  background-color: #713823;
+}
+
+.clr-accent-100 {
+  background-color: hsl(345deg, 40%, 33%);
+  color: white;
+  border-color: white;
+}
+
+.btn-accent-100 {
+  background-color: hsl(345deg, 40%, 33%);
+  color: white;
+  border-color: white;
+}
+
+.btn-accent-100:hover {
+  background-color: #642b39;
+}
+
+.clr-accent-200 {
+  background-color: hsl(345deg, 40%, 23%);
+  color: white;
+  border-color: white;
+}
+
+.btn-accent-200 {
+  background-color: hsl(345deg, 40%, 23%);
+  color: white;
+  border-color: white;
+}
+
+.btn-accent-200:hover {
+  background-color: #401c25;
+}
+
+input[type=button] {
+  font-size: medium;
+  margin: 0;
+  padding: 0.25em 1em;
+  cursor: default;
+  white-space: pre;
+  text-align: center;
+  box-sizing: border-box;
+  border-radius: 3px;
+  border: 1px solid;
+  min-width: 3ch;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--clr-primary-400);
+  color: white;
+}
+
+#root {
+  height: 100%;
+}
+
+._root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+._container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+._page {
+  padding: 30px;
+  margin: 10px;
+  border-radius: 10px;
+  flex-grow: 1;
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+header,
+footer {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+header {
+  border-bottom: 1px solid;
+}
+
+footer {
+  border-top: 1px solid;
+}
+
+._winPercentContainer {
+  font-size: 4em;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+._winPercentContainer span {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: small;
+}
+
+._champions {
+  margin: auto;
+  height: 600px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  overflow-x: hidden;
+  justify-content: center;
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
+}
+._champions::-webkit-scrollbar {
+  width: 10px;
+}
+._champions::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+._champions::-webkit-scrollbar-thumb {
+  background: var(--clr-secondary-100);
+}
+._champions::-webkit-scrollbar-thumb:hover {
+  background: var(--clr-secondary-200);
+}
+
+._champion {
+  padding: 10px;
+  width: 75px;
+  display: flex;
+  flex-direction: column;
+  margin: 5px 1px;
+  text-align: center;
+  font-size: small;
+}
+._champion:hover {
+  background-color: var(--clr-secondary-100);
+  color: black;
+  cursor: pointer;
+}
+
+._champion > img {
+  height: 50px;
+  width: 50px;
+  align-self: center;
+}
+
+._selectedChampions {
+  flex: 1 0 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+._selectedChampion {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+._selectedChampion ._blank,
+._selectedChampion img {
+  flex: 0 0 100px;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  display: flex;
+  margin-right: 15px;
+}
+._selectedChampion ._rightContent {
+  flex: 1;
+}
+._selectedChampion ._blank {
+  border: 1px solid;
+}
+._selectedChampion ._xButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+}/*# sourceMappingURL=styles.css.map */

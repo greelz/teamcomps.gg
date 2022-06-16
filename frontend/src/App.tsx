@@ -1,12 +1,20 @@
 import React, { useState } from "react";
+import "./css/styles.css";
 import "./App.css";
 import Teamcomp from "./Teamcomp";
 import * as f from "./FakeWebServer";
-import { ChampionName, IChampionTableData } from "./Interfaces";
+import { IChampionTableData } from "./Interfaces";
 import UseFetchService from "./UseFetchService";
 import RandomNumberJumbler from "./RandomNumberJumbler";
 import ChampionsList from "./ChampionsList";
-import { cursorTo } from "readline";
+
+async function setTimeoutAsync(ms: number): Promise<void> {
+  return new Promise(res => {
+    setTimeout(() => {
+      res();
+    }, ms);
+  })
+}
 
 function App() {
   // State
@@ -18,7 +26,8 @@ function App() {
     null,
   ]);
   const [locationToFill, setLocationToFill] = useState(0);
-  const [winPercentage, setWinPercentage] = useState(50);
+  const [winPercentage, setWinPercentage] = useState(0);
+  const [numGames, setNumGames] = useState(0);
   const [showRandomNumbers, setShowRandomNumbers] = useState(false);
   const [requestInProgress, setRequestInProgress] = useState(false);
 
@@ -39,10 +48,21 @@ function App() {
         num += 1;
       }
     }
+    const startMs = new Date().getTime();
     const response = await (
-      await fetch(`http://localhost:3010/api/getWinningPercentage?prod=${prod}&numChamps=${num}`)
+      await fetch(
+        `http://localhost:3010/api/getWinningPercentage?prod=${prod}&numChamps=${num}`
+      )
     ).json();
-    return response['winPercentage'];
+
+    const now = new Date().getTime();
+    if (now - startMs < 500) {
+      await setTimeoutAsync(500 - (now - startMs));
+      return [response["winPercentage"], response["games"]];
+    }
+    else {
+      return [response["winPercentage"], response["games"]];
+    }
   };
 
   // Handlers
@@ -58,31 +78,42 @@ function App() {
     setTeamcomp(copy);
     setLocationToFill((locationToFill + 1) % 5);
 
-    const newPercentage = await getNewWinningPercentage(copy);
-    console.log(newPercentage);
+    const [newPercentage, games] = await getNewWinningPercentage(copy);
     setWinPercentage(parseFloat(newPercentage));
+    setNumGames(games);
     setRequestInProgress(false);
     setShowRandomNumbers(false);
   };
 
   if (championData) {
     return (
-      <div className="_page">
-        <RandomNumberJumbler
-          minValue={10}
-          maxValue={100}
-          actualValue={winPercentage}
-          jumble={showRandomNumbers}
-        />
-        <div className="_container">
-          <Teamcomp champions={teamcomp} />
-          <ChampionsList
-            championData={championData}
-            handleChampionClick={(champion: IChampionTableData) =>
-              handleChampClick(champion)
-            }
-          />
+      <div className="_root">
+        <header>Teamcomps.gg</header>
+        <div className="_page clr-primary-380">
+          <div className="_winPercentContainer">
+            <RandomNumberJumbler
+              minValue={10}
+              maxValue={100}
+              actualValue={winPercentage}
+              jumble={showRandomNumbers}
+            />
+            <span>({numGames} games)</span>
+          </div>
+          <div className="_container">
+            <Teamcomp champions={teamcomp} onClickX={(i: number) => {
+              const copy = [...teamcomp];
+              copy[i] = null;
+              setTeamcomp(copy);
+            }} />
+            <ChampionsList
+              championData={championData}
+              handleChampionClick={(champion: IChampionTableData) =>
+                handleChampClick(champion)
+              }
+            />
+          </div>
         </div>
+        <footer>Thanks for using teamcomps.gg.</footer>
       </div>
     );
   } else {
