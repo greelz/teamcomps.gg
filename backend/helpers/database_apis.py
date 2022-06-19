@@ -1,10 +1,10 @@
 from datetime import datetime
 from math import prod
 from typing import Iterator, TypeVar, Union
-from backend.helpers.secrets import conn_string
+from helpers.secrets import conn_string
 import psycopg2
 from psycopg2 import sql
-from backend.helpers.api_classes import QueueType
+from helpers.api_classes import QueueType
 
 
 T = TypeVar('T')

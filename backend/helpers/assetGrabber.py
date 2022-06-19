@@ -6,17 +6,17 @@ from math import ceil, sqrt
 import psycopg2
 from secrets import conn_string
 
-def add_champion(internalName, id, prettyName, primeId, title):
+def add_champion(internalName, id, prettyName, primeId, title, popularity):
     with psycopg2.connect(conn_string) as conn:
         # Open a cursor to perform database operations
         with conn.cursor() as cur:
             # Execute a command: this creates a new table
             cur.execute("""
-                INSERT INTO champions (id, primeid, internalname, prettyname, title) 
-                VALUES (%s, %s, %s, %s, %s) ON CONFLICT (id)
-                DO UPDATE SET (internalname, prettyname, title) = (EXCLUDED.internalname, EXCLUDED.prettyname, EXCLUDED.title)
+                INSERT INTO champions (id, primeid, internalname, prettyname, title, popularity) 
+                VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (id)
+                DO UPDATE SET (internalname, prettyname, title, popularity) = (EXCLUDED.internalname, EXCLUDED.prettyname, EXCLUDED.title, EXCLUDED.popularity)
             """, 
-                (id, primeId, internalName, prettyName, title))
+                (id, primeId, internalName, prettyName, title, popularity))
 
             # Make the changes to the database persistent
             conn.commit()
@@ -63,9 +63,32 @@ def get_champion_images(curr_patch, base_url):
 
     return champion_data
 
+# Return a dictionary based on a SQL query for most popular champions
+def get_champion_popularity():
+    pop_dic = {}
+    with psycopg2.connect(conn_string) as conn:
+        # Open a cursor to perform database operations
+        with conn.cursor() as cur:
+            cur.execute(
+            '''
+                SELECT internalname
+                FROM public.singles
+                INNER JOIN champions on champions.primeid = singles.primeid
+                ORDER BY (wins + losses) desc
+            '''
+            )
+
+            count = 1 # Start with most popular as a 1, down to least
+            for x in cur:
+                pop_dic[x[0].lower()] = count
+                count += 1
+
+    return pop_dic
+
 def update_champions_in_db(champion_data):
     existing_champs = get_champions() # Dictionary of lowercase internal names with all properties 
     primes = [x for x in range(100000) if is_prime(x)]
+    champion_popularity = get_champion_popularity() # Dictionary of lowercase internal names w/ value of popularity
     # Also validate the existing database and add any new champions to the database (and update titles if necessary)
     for champion_name in champion_data['data']:
         dic = champion_data['data'][champion_name]
@@ -78,6 +101,7 @@ def update_champions_in_db(champion_data):
         if id_lower not in existing_champs: # id is actually internalname
             print("{} wasn't in the database. We will add it now.".format(id_lower))
             add_champion(id, key, name, primeid, title)
+            return
         
         c = existing_champs[id_lower]
         # These shouldn't change...
@@ -86,8 +110,10 @@ def update_champions_in_db(champion_data):
         assert(c['primeid'] == primeid)
         assert(c['prettyname'] == name)
 
-        # But we'll still call add_champion to update the titles
-        add_champion(id, key, name, primeid, title)
+        popularity = champion_popularity[id_lower]
+
+        # But we'll still call add_champion to update the titles and popularity
+        add_champion(id, key, name, primeid, title, popularity)
 
 
 def is_prime(val: int):

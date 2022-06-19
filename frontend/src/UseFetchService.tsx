@@ -19,7 +19,7 @@ export default function UseFetchService({
 
     loadFunc();
 
-  }, [dataLoadAsyncCall]);
+  }, []);
 
   return data;
 }

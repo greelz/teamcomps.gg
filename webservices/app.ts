@@ -11,7 +11,9 @@ interface IChampionTableData {
   midlaner: boolean,
   jungler: boolean,
   support: boolean,
-  adc: boolean
+  adc: boolean,
+  title: string,
+  popularity: number
 }
 
 const port = 3010;

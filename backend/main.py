@@ -1,8 +1,8 @@
 import time
-from backend.helpers.api_classes import Region
-from backend.helpers.riot_apis import _get_match, _get_players_in_division, get_all_match_ids_for_puuid, get_all_players_in_division, \
+from helpers.api_classes import Region
+from helpers.riot_apis import _get_match, _get_players_in_division, get_all_match_ids_for_puuid, get_all_players_in_division, \
     QueueType, Queue, Tier, Division, get_match_results, _get_puuid_by_name, _get_master_leagues, _get_grandmaster_leagues, _get_challenger_leagues
-from backend.helpers.database_apis import add_games, add_summoner, days_since_last_request_for_summoner, \
+from helpers.database_apis import add_games, add_summoner, days_since_last_request_for_summoner, \
     get_match_ids_not_yet_in_database 
 from multiprocessing import Pool
 
@@ -22,10 +22,10 @@ def work(args):
 
 if __name__ == "__main__": 
     count = 0
-    region: Region = Region.Brazil
+    region: Region = Region.EuWest
     queue = Queue.RANKED_SOLO_5x5
-    tier = Tier.III
-    division = Division.PLATINUM
+    tier = Tier.I
+    division = Division.DIAMOND
 
     for player in get_all_players_in_division(queue, tier, division, region):
         count += 1

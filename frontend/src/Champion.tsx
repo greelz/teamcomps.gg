@@ -13,20 +13,24 @@ const images = importAll(
 );
 
 export interface ChampionProps extends IChampionTableData {
-  name: string,
-  internalName: string,
-  clickHandler?: MouseEventHandler<HTMLDivElement>,
+  clickHandler?: MouseEventHandler<HTMLDivElement>;
+  onDragStart: (championName: IChampionTableData) => void;
 }
 
 export default function Champion(props: ChampionProps) {
-  if (props.name) {
+  if (props.prettyname) {
     return (
-      <div onClick={props.clickHandler} className="_champion">
-        <img alt={props.name} src={images[props.internalName + ".png"]} />
-        <span>{props.name}</span>
+      <div
+        draggable
+        onDragStart={() => props.onDragStart({...props})}
+        onClick={props.clickHandler}
+        className="_champion"
+      >
+        <img alt={props.prettyname} src={images[props.internalname + ".png"]} />
+        <span>{props.prettyname}</span>
       </div>
     );
   } else {
-    return <div className="_champion blank"></div>
+    return <div className="_champion blank"></div>;
   }
 }

@@ -8,13 +8,15 @@ export interface ILeagueData {
 export interface IChampionTableData {
   id: number,
   primeid: number,
-  internalname: string,
+  internalname: ChampionName,
   prettyname: string,
   toplaner: boolean,
   midlaner: boolean,
   jungler: boolean,
   support: boolean,
-  adc: boolean
+  adc: boolean,
+  title: string,
+  popularity: number // The lower the better
 }
 
 export interface IChampionData {

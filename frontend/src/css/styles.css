@@ -171,6 +171,34 @@
   background-color: #401c25;
 }
 
+input {
+  -ms-writing-mode: lr-tb !important;
+      writing-mode: horizontal-tb !important;
+  text-rendering: auto;
+  color: fieldtext;
+  letter-spacing: normal;
+  word-spacing: normal;
+  line-height: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: start;
+  -webkit-appearance: auto;
+     -moz-appearance: auto;
+          appearance: auto;
+  -webkit-rtl-ordering: logical;
+  cursor: text;
+  background-color: field;
+  margin: 0em;
+  padding: 1px 2px;
+  border-width: 1px;
+  border-style: inset;
+  border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+  -o-border-image: initial;
+     border-image: initial;
+}
+
 input[type=button] {
   font-size: medium;
   margin: 0;
@@ -179,9 +207,43 @@ input[type=button] {
   white-space: pre;
   text-align: center;
   box-sizing: border-box;
-  border-radius: 3px;
-  border: 1px solid;
   min-width: 3ch;
+}
+input[type=button]:hover, input[type=button]._selected {
+  background-color: var(--clr-secondary-100);
+  cursor: pointer;
+}
+
+.icon {
+  border: none;
+  background: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.icon-top {
+  background-image: url(../assets/ranked-positions/Position_Plat-Top.png);
+}
+
+.icon-mid {
+  background-image: url(../assets/ranked-positions/Position_Plat-Mid.png);
+}
+
+.icon-bot {
+  background-image: url(../assets/ranked-positions/Position_Plat-Bot.png);
+}
+
+.icon-support {
+  background-image: url(../assets/ranked-positions/Position_Plat-Support.png);
+}
+
+.icon-jungle {
+  background-image: url(../assets/ranked-positions/Position_Plat-Jungle.png);
+}
+
+.icon-x {
+  background-image: url(../assets/x.png);
 }
 
 * {
@@ -254,29 +316,58 @@ footer {
   font-size: small;
 }
 
-._champions {
+._championList {
+  flex: 1 0 0;
+}
+._championList ._champions {
   margin: auto;
-  height: 600px;
+  max-height: 600px;
   display: flex;
   flex-wrap: wrap;
   overflow-y: auto;
   overflow-x: hidden;
-  justify-content: center;
   /* Track */
   /* Handle */
   /* Handle on hover */
 }
-._champions::-webkit-scrollbar {
+._championList ._champions::-webkit-scrollbar {
   width: 10px;
 }
-._champions::-webkit-scrollbar-track {
+._championList ._champions::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
-._champions::-webkit-scrollbar-thumb {
+._championList ._champions::-webkit-scrollbar-thumb {
   background: var(--clr-secondary-100);
 }
-._champions::-webkit-scrollbar-thumb:hover {
+._championList ._champions::-webkit-scrollbar-thumb:hover {
   background: var(--clr-secondary-200);
+}
+._championList ._filters {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+  height: 30px;
+  padding: 10px 0;
+}
+._championList ._filters ._roleFilters {
+  display: flex;
+  justify-content: space-evenly;
+  flex: 1;
+  margin-right: 20px;
+  align-items: center;
+}
+._championList ._filters ._roleFilters input {
+  padding: 5px;
+  background-origin: content-box;
+  background-size: cover;
+  height: 40px;
+  width: 40px;
+}
+._championList ._filters ._otherFilters {
+  display: flex;
+}
+._championList ._filters ._otherFilters input {
+  width: 12ch;
 }
 
 ._champion {
@@ -284,7 +375,6 @@ footer {
   width: 75px;
   display: flex;
   flex-direction: column;
-  margin: 5px 1px;
   text-align: center;
   font-size: small;
 }
@@ -295,24 +385,27 @@ footer {
 }
 
 ._champion > img {
-  height: 50px;
-  width: 50px;
+  height: 60px;
+  width: 60px;
   align-self: center;
 }
 
 ._selectedChampions {
-  flex: 1 0 300px;
+  flex: 0 0 290px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
 }
 
 ._selectedChampion {
+  padding: 5px;
+  border-radius: 10px;
   position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  background-color: var(--clr-primary-400);
 }
 ._selectedChampion ._blank,
 ._selectedChampion img {
@@ -322,15 +415,46 @@ footer {
   border-radius: 50%;
   display: flex;
   margin-right: 15px;
+  border: 1px solid;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 ._selectedChampion ._rightContent {
   flex: 1;
 }
-._selectedChampion ._blank {
-  border: 1px solid;
+._selectedChampion ._name {
+  font-weight: bold;
 }
-._selectedChampion ._xButton {
+._selectedChampion ._description {
+  font-style: italic;
+  font-size: small;
+}
+._selectedChampion .icon-x {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 10px;
+  right: 0px;
+  height: 17px;
+  width: 17px;
+}
+._selectedChampion .icon-x:hover {
+  background-color: transparent;
+}
+
+.alert-low {
+  font-size: small;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  background-color: var(--clr-primary-300);
+  color: var(--clr-primary-100);
+  flex: 0 1;
+  text-align: center;
+  display: inline-block;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  align-self: center;
+}
+
+._draggedOver {
+  background-color: var(--clr-primary-300);
 }/*# sourceMappingURL=styles.css.map */

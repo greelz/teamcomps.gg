@@ -73,31 +73,66 @@ footer {
   }
 }
 
-._champions {
-  margin: auto;
-  height: 600px;
-  display: flex;
-  flex-wrap: wrap;
-  overflow-y: auto;
-  overflow-x: hidden;
-  justify-content: center;
+._championList {
+  flex: 1 0 0;
 
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
-  /* Track */
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
+  ._champions {
+    margin: auto;
+    max-height: 600px;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: var(--clr-secondary-100);
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--clr-secondary-200);
+    }
   }
 
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: var(--clr-secondary-100);
-  }
+  ._filters {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    height: 30px;
+    padding: 10px 0;
 
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: var(--clr-secondary-200);
+    ._roleFilters {
+      display: flex;
+      justify-content: space-evenly;
+      flex: 1;
+      margin-right: 20px;
+      align-items: center;
+
+      input {
+        padding: 5px;
+        background-origin: content-box;
+        background-size: cover;
+        height: 40px;
+        width: 40px;
+      }
+    }
+
+    ._otherFilters {
+      display: flex;
+
+      input {
+        width: 12ch;
+      }
+    }
   }
 }
 
@@ -106,7 +141,6 @@ footer {
   width: 75px;
   display: flex;
   flex-direction: column;
-  margin: 5px 1px;
   text-align: center;
   font-size: small;
   &:hover {
@@ -117,25 +151,27 @@ footer {
 }
 
 ._champion > img {
-  height: 50px;
-  width: 50px;
+  height: 60px;
+  width: 60px;
   align-self: center;
 }
 
 ._selectedChampions {
-  flex: 1 0 300px;
+  flex: 0 0 290px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
 }
 
 ._selectedChampion {
+  padding: 5px;
+  border-radius: 10px;
   position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-
+  background-color: var(--clr-primary-400);
 
   ._blank,
   img {
@@ -145,20 +181,50 @@ footer {
     border-radius: 50%;
     display: flex;
     margin-right: 15px;
+    border: 1px solid;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   ._rightContent {
     flex: 1;
   }
 
-  ._blank {
-    border: 1px solid;
+  ._name {
+    font-weight: bold;
   }
 
-  ._xButton {
+  ._description {
+    font-style: italic;
+    font-size: small;
+  }
+
+  .icon-x {
     position: absolute;
-    top: 0; 
-    right: 0;
+    top: 10px;
+    right: 0px;
+    height: 17px;
+    width: 17px;
 
+    &:hover {
+      background-color: transparent;
+    }
   }
+}
+
+.alert-low {
+  font-size: small;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  background-color: var(--clr-primary-300);
+  color: var(--clr-primary-100);
+  flex: 0 1;
+  text-align: center;
+  display: inline-block;
+  width: max-content;
+  align-self: center;
+}
+
+._draggedOver {
+  background-color: var(--clr-primary-300);
 }

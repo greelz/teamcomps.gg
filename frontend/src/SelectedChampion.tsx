@@ -1,11 +1,11 @@
-import React from "react";
-import { ChampionName } from "./Interfaces";
+import React, { useState } from "react";
+import { IChampionTableData } from "./Interfaces";
 
-interface ISelectedChampionProps {
-  name: ChampionName | undefined | null;
-  description: string;
+interface ISelectedChampionProps extends IChampionTableData {
+  onClickX: () => void;
+  onDrop: () => void;
+  onDragStart: (champion: IChampionTableData) => void;
   role: string;
-  onClickX: Function;
 }
 
 function importAll(r: __WebpackModuleApi.RequireContext) {
@@ -15,34 +15,44 @@ function importAll(r: __WebpackModuleApi.RequireContext) {
   });
   return imagesDictionary;
 }
-const images = importAll(
+
+const championImages = importAll(
   require.context("./assets/champions/120x120", false, /\.(png)$/)
 );
 
-export default function SelectedChampion({
-  name,
-  description,
-  role,
-  onClickX
-}: ISelectedChampionProps) {
-  if (name) {
-    return (
-      <div className="_selectedChampion">
-        <img alt={name} src={images[name + ".png"]} />
-        <div className="_rightContent">
-          <div className="_name">{name}</div>
-          <div className="_description">{description}</div>
-          <div className="_role">{role}</div>
-        </div>
-        <div onClick={() => onClickX()} className="_xButton">X</div>
+export default function SelectedChampion(props: ISelectedChampionProps) {
+  const { onDragStart, onDrop, role, onClickX } = props;
+  const [draggedOver, setDraggedOver] = useState(false);
+  return (
+    <div
+      className={`_selectedChampion ${draggedOver ? "_draggedOver" : ""}`}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDraggedOver(true);
+      }}
+      onDragLeave={(e) => {
+        setDraggedOver(false);
+      }}
+      onDrop={() => {
+        setDraggedOver(false);
+        onDrop();
+      }}
+      onDragStart={() => onDragStart({ ...props })}
+      draggable
+    >
+      {props.internalname ? (
+        <img
+          alt={props.internalname}
+          src={championImages[props.internalname + ".png"]}
+        />
+      ) : (
+        <div className={`_blank ${role}`}></div>
+      )}
+      <div className="_rightContent">
+        <div className="_name">{props.prettyname}</div>
+        <div className="_description">{props.title}</div>
       </div>
-    );
-  } else {
-    return (
-      <div className="_selectedChampion">
-        <div className="_blank"></div>
-        <div className="_rightContent"></div>
-      </div>
-    );
-  }
+      <input type="button" onClick={() => onClickX()} className="icon icon-x" />
+    </div>
+  );
 }

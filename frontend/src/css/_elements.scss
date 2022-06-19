@@ -1,3 +1,27 @@
+input {
+  writing-mode: horizontal-tb !important;
+  text-rendering: auto;
+  color: fieldtext;
+  letter-spacing: normal;
+  word-spacing: normal;
+  line-height: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: start;
+  appearance: auto;
+  -webkit-rtl-ordering: logical;
+  cursor: text;
+  background-color: field;
+  margin: 0em;
+  padding: 1px 2px;
+  border-width: 1px;
+  border-style: inset;
+  border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+  border-image: initial;
+}
+
 input[type="button"] {
   font-size: medium;
   margin: 0;
@@ -6,7 +30,42 @@ input[type="button"] {
   white-space: pre;
   text-align: center;
   box-sizing: border-box;
-  border-radius: 3px;
-  border: 1px solid;
   min-width: 3ch;
+
+  &:hover,&._selected {
+    background-color: var(--clr-secondary-100);
+    cursor: pointer;
+  }
+}
+
+.icon {
+  border: none;
+  background: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.icon-top {
+  background-image: url(../assets/ranked-positions/Position_Plat-Top.png);
+}
+
+.icon-mid {
+  background-image: url(../assets/ranked-positions/Position_Plat-Mid.png);
+}
+
+.icon-bot {
+  background-image: url(../assets/ranked-positions/Position_Plat-Bot.png);
+}
+
+.icon-support {
+  background-image: url(../assets/ranked-positions/Position_Plat-Support.png);
+}
+
+.icon-jungle {
+  background-image: url(../assets/ranked-positions/Position_Plat-Jungle.png);
+}
+
+.icon-x {
+  background-image: url(../assets/x.png);
 }

@@ -2,8 +2,8 @@ import json
 import time
 from typing import Iterator, Union
 import requests
-from backend.helpers.api_classes import *
-from backend.helpers.secrets import riot_api_key
+from helpers.api_classes import *
+from helpers.secrets import riot_api_key
 
 # Don't commit this key to github, make it a private variable on github
 rate_limit_10_seconds = 500
