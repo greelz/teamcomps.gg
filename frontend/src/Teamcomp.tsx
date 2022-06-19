@@ -1,6 +1,6 @@
 import React from "react";
 import BlankSelectedChampion from "./BlankSelectedChampion";
-import { ChampionName, IChampionTableData } from "./Interfaces";
+import { IChampionTableData } from "./Interfaces";
 import SelectedChampion from "./SelectedChampion";
 
 interface Props {
@@ -8,6 +8,7 @@ interface Props {
   onClickX: (i: number) => void;
   onDrop: (i: number) => void;
   onDragStart: (c: IChampionTableData) => void;
+  onClickReset: () => void;
 }
 
 export default function Teamcomp({
@@ -15,6 +16,7 @@ export default function Teamcomp({
   onClickX,
   onDrop,
   onDragStart,
+  onClickReset,
 }: Props) {
   const roles = [
     "icon-top",
@@ -23,6 +25,7 @@ export default function Teamcomp({
     "icon-bot",
     "icon-support",
   ];
+  const disabled = champions.filter(x => x == null).length === 5;
   return (
     <div className="_selectedChampions">
       <div className="alert-low">Results are role-agnostic.</div>
@@ -44,6 +47,13 @@ export default function Teamcomp({
           );
         }
       })}
+        <input
+          type="button"
+          value="Reset"
+          className={`_resetButton btn-secondary-100 ${disabled ? '_disabled' : ''}`}
+          onClick={onClickReset}
+          disabled={disabled}
+        />
     </div>
   );
 }

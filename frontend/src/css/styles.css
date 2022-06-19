@@ -14,161 +14,161 @@
 .clr-primary-100 {
   background-color: hsl(220deg, 100%, 75%);
   color: black;
-  border-color: black;
 }
 
 .btn-primary-100 {
   background-color: hsl(220deg, 100%, 75%);
   color: black;
-  border-color: black;
+  border-color: transparent;
 }
 
 .btn-primary-100:hover {
   background-color: #6699ff;
+  border-color: transparent;
 }
 
 .clr-primary-200 {
   background-color: hsl(220deg, 100%, 55%);
   color: black;
-  border-color: black;
 }
 
 .btn-primary-200 {
   background-color: hsl(220deg, 100%, 55%);
   color: black;
-  border-color: black;
+  border-color: transparent;
 }
 
 .btn-primary-200:hover {
   background-color: #0055ff;
+  border-color: transparent;
 }
 
 .clr-primary-300 {
   background-color: hsl(220deg, 100%, 35%);
   color: white;
-  border-color: white;
 }
 
 .btn-primary-300 {
   background-color: hsl(220deg, 100%, 35%);
   color: white;
-  border-color: white;
+  border-color: transparent;
 }
 
 .btn-primary-300:hover {
   background-color: #003399;
+  border-color: transparent;
 }
 
 .clr-primary-380 {
   background-color: hsl(220deg, 100%, 15%);
   color: white;
-  border-color: white;
 }
 
 .btn-primary-380 {
   background-color: hsl(220deg, 100%, 15%);
   color: white;
-  border-color: white;
+  border-color: transparent;
 }
 
 .btn-primary-380:hover {
   background-color: #001133;
+  border-color: transparent;
 }
 
 .clr-primary-400 {
   background-color: hsl(220deg, 100%, 10%);
   color: white;
-  border-color: white;
 }
 
 .btn-primary-400 {
   background-color: hsl(220deg, 100%, 10%);
   color: white;
-  border-color: white;
+  border-color: transparent;
 }
 
 .btn-primary-400:hover {
   background-color: #00091a;
+  border-color: transparent;
 }
 
 .clr-secondary-100 {
   background-color: hsl(16deg, 53%, 77%);
   color: black;
-  border-color: black;
 }
 
 .btn-secondary-100 {
   background-color: hsl(16deg, 53%, 77%);
   color: black;
-  border-color: black;
+  border-color: transparent;
 }
 
 .btn-secondary-100:hover {
   background-color: #dda692;
+  border-color: transparent;
 }
 
 .clr-secondary-200 {
   background-color: hsl(16deg, 53%, 57%);
   color: black;
-  border-color: black;
 }
 
 .btn-secondary-200 {
   background-color: hsl(16deg, 53%, 57%);
   color: black;
-  border-color: black;
+  border-color: transparent;
 }
 
 .btn-secondary-200:hover {
   background-color: #c56644;
+  border-color: transparent;
 }
 
 .clr-secondary-300 {
   background-color: hsl(16deg, 53%, 34%);
   color: white;
-  border-color: white;
 }
 
 .btn-secondary-300 {
   background-color: hsl(16deg, 53%, 34%);
   color: white;
-  border-color: white;
+  border-color: transparent;
 }
 
 .btn-secondary-300:hover {
   background-color: #713823;
+  border-color: transparent;
 }
 
 .clr-accent-100 {
   background-color: hsl(345deg, 40%, 33%);
   color: white;
-  border-color: white;
 }
 
 .btn-accent-100 {
   background-color: hsl(345deg, 40%, 33%);
   color: white;
-  border-color: white;
+  border-color: transparent;
 }
 
 .btn-accent-100:hover {
   background-color: #642b39;
+  border-color: transparent;
 }
 
 .clr-accent-200 {
   background-color: hsl(345deg, 40%, 23%);
   color: white;
-  border-color: white;
 }
 
 .btn-accent-200 {
   background-color: hsl(345deg, 40%, 23%);
   color: white;
-  border-color: white;
+  border-color: transparent;
 }
 
 .btn-accent-200:hover {
   background-color: #401c25;
+  border-color: transparent;
 }
 
 input {
@@ -192,11 +192,11 @@ input {
   background-color: field;
   margin: 0em;
   padding: 1px 2px;
-  border-width: 1px;
-  border-style: inset;
-  border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
-  -o-border-image: initial;
-     border-image: initial;
+}
+
+input,
+select {
+  border: 1px solid #efefef;
 }
 
 input[type=button] {
@@ -209,9 +209,18 @@ input[type=button] {
   box-sizing: border-box;
   min-width: 3ch;
 }
-input[type=button]:hover, input[type=button]._selected {
-  background-color: var(--clr-secondary-100);
+input[type=button]:hover {
   cursor: pointer;
+}
+input[type=button]._disabled {
+  background-color: rgba(239, 239, 239, 0.3);
+  color: rgba(16, 16, 16, 0.3);
+  border-color: rgba(118, 118, 118, 0.3);
+  cursor: default;
+}
+input[type=button]._disabled:hover {
+  background-color: rgba(239, 239, 239, 0.3);
+  cursor: default;
 }
 
 .icon {
@@ -457,4 +466,9 @@ footer {
 
 ._draggedOver {
   background-color: var(--clr-primary-300);
+}
+
+._resetButton {
+  width: 15ch;
+  align-self: center;
 }/*# sourceMappingURL=styles.css.map */

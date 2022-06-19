@@ -20,10 +20,8 @@ $colors: (
 @mixin oppositeBgColor($bgColor) {
   @if lightness($bgColor) < 51 {
     color: white;
-    border-color: white;
   } @else {
     color: black;
-    border-color: black;
   }
 }
 
@@ -45,9 +43,11 @@ $colors: (
     .btn-#{$colorName}-#{$shade} {
       background-color: $value;
       @include oppositeBgColor($value);
+      border-color: transparent;
     }
     .btn-#{$colorName}-#{$shade}:hover {
       background-color: darken($value, 5);
+      border-color: transparent;
     }
   }
 }

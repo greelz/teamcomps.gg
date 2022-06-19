@@ -16,10 +16,11 @@ input {
   background-color: field;
   margin: 0em;
   padding: 1px 2px;
-  border-width: 1px;
-  border-style: inset;
-  border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
-  border-image: initial;
+}
+
+input,
+select {
+  border: 1px solid #efefef;
 }
 
 input[type="button"] {
@@ -32,9 +33,20 @@ input[type="button"] {
   box-sizing: border-box;
   min-width: 3ch;
 
-  &:hover,&._selected {
-    background-color: var(--clr-secondary-100);
+  &:hover {
     cursor: pointer;
+  }
+
+  &._disabled {
+    background-color: rgba(239, 239, 239, 0.3);
+    color: rgba(16, 16, 16, 0.3);
+    border-color: rgba(118, 118, 118, 0.3);
+    cursor: default;
+
+    &:hover {
+      background-color: rgba(239, 239, 239, 0.3);
+      cursor: default;
+    }
   }
 }
 

@@ -157,6 +157,7 @@ function App() {
                   }
                 }
               }}
+              onClickReset={() => setTeamcomp([null, null, null, null, null])}
             />
             <ChampionsList
               championData={championData}
