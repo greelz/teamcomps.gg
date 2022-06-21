@@ -25,7 +25,7 @@ if __name__ == "__main__":
     region: Region = Region.EuWest
     queue = Queue.RANKED_SOLO_5x5
     tier = Tier.I
-    division = Division.DIAMOND
+    division = Division.PLATINUM
 
     for player in get_all_players_in_division(queue, tier, division, region):
         count += 1

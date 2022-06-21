@@ -1,17 +1,23 @@
 import React, { ChangeEvent, useState } from "react";
 import Champion from "./Champion";
-import { ChampionName, IChampionTableData } from "./Interfaces";
+import { IChampionTableData } from "./Interfaces";
+
+export interface IChampionListChamp extends IChampionTableData {
+  relativePercent?: number;
+}
 
 interface IChampionsListProps {
-  championData: IChampionTableData[];
+  championData: IChampionListChamp[];
   handleChampionClick: (champion: IChampionTableData) => void;
   onDragStart: (championName: IChampionTableData) => void,
+  currentPercentage?: number
 }
 
 export default function ChampionsList({
   championData,
   handleChampionClick,
   onDragStart,
+  currentPercentage
 }: IChampionsListProps) {
 
   function isInFilters(element: IChampionTableData): boolean {
@@ -54,6 +60,7 @@ export default function ChampionsList({
   function handleSortSelectionChange(e: ChangeEvent<HTMLSelectElement>) {
     if (e.target.value === 'Name') setSortSelection(() => nameSort);
     else if (e.target.value === 'Popularity') setSortSelection(() => popularitySort);
+    else if (e.target.value === 'Relative') setSortSelection(() => relativePercSort);
   }
 
   const nameSort = (a: IChampionTableData, b: IChampionTableData): number => {
@@ -62,8 +69,21 @@ export default function ChampionsList({
     return 0;
   }
 
-  const popularitySort = (a: IChampionTableData, b: IChampionTableData): number => {
+  const popularitySort = (a: IChampionListChamp, b: IChampionListChamp): number => {
     return a.popularity - b.popularity;
+  }
+
+  const relativePercSort = (a: IChampionListChamp, b: IChampionListChamp): number => {
+    if (a.relativePercent && b.relativePercent) {
+      return b.relativePercent - a.relativePercent;
+    }
+    else if (a.relativePercent) {
+      return -100;
+    }
+    else if (b.relativePercent) {
+      return 100;
+    }
+    return 0;
   }
 
   const [textInFilter, setTextInFilter] = useState<string>(
@@ -101,6 +121,7 @@ export default function ChampionsList({
           <select onChange={(e) => handleSortSelectionChange(e)}>
             <option value="Name">Sort by name</option>
             <option value="Popularity">Sort by popularity</option>
+            <option value="Relative">Sort by relative %</option>
           </select>
         </div>
       </div>
@@ -113,6 +134,7 @@ export default function ChampionsList({
                 key={element.internalname}
                 {...element}
                 clickHandler={() => handleChampionClick(element)}
+                currentPercentage={currentPercentage}
               />
             );
           }

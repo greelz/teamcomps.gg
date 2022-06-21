@@ -5,7 +5,7 @@ type Props = {
   dataLoadAsyncCall: Function;
 };
 
-export default function UseFetchService({
+export default function UseFetchService<T>({
   initialState,
   dataLoadAsyncCall,
 }: Props) {
@@ -19,7 +19,7 @@ export default function UseFetchService({
 
     loadFunc();
 
-  }, []);
+  }, [dataLoadAsyncCall]);
 
-  return data;
+  return data as unknown as T;
 }

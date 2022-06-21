@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./css/styles.css";
 import "./App.css";
 import Teamcomp from "./Teamcomp";
 import * as f from "./FakeWebServer";
-import { ChampionName, IChampionTableData } from "./Interfaces";
+import { IChampionTableData } from "./Interfaces";
 import UseFetchService from "./UseFetchService";
 import RandomNumberJumbler from "./RandomNumberJumbler";
-import ChampionsList from "./ChampionsList";
+import ChampionsList, { IChampionListChamp } from "./ChampionsList";
+import { loadavg } from "os";
 
 async function setTimeoutAsync(ms: number): Promise<void> {
   return new Promise((res) => {
@@ -16,13 +17,7 @@ async function setTimeoutAsync(ms: number): Promise<void> {
   });
 }
 
-
 function App() {
-  // Initial fetches
-  const championData: IChampionTableData[] = UseFetchService({
-    dataLoadAsyncCall: f.getChampionData,
-  }) as IChampionTableData[];
-
   // State
   const [teamcomp, setTeamcomp] = useState<Array<IChampionTableData | null>>([
     null,
@@ -31,16 +26,29 @@ function App() {
     null,
     null,
   ]);
+
   const [showRandomNumbers, setShowRandomNumbers] = useState(false);
   const [requestInProgress, setRequestInProgress] = useState(false);
   const [winPercentage, setWinPercentage] = useState<number>(50.0);
   const [numGames, setNumGames] = useState(0);
-  const [dragChampion, setDragChampion] = useState<IChampionTableData | null>(null);
+  const [dragChampion, setDragChampion] = useState<IChampionTableData | null>(
+    null
+  );
+  const [championData, setChampionData] = useState<
+    IChampionListChamp[] | null
+  >();
+
+  useEffect(() => {
+    const load = async () => {
+      setChampionData(await f.getChampionData());
+    };
+    load();
+  }, []);
 
   useEffect(() => {
     const getNewWinningPercentage = async (
       comp: (IChampionTableData | null)[]
-    ) => {
+    ): Promise<void> => {
       let prod = 1;
       let num = 0;
       for (const champ of comp) {
@@ -50,22 +58,57 @@ function App() {
         }
       }
       const startMs = new Date().getTime();
-      const response = await (
-        await fetch(
-          `http://localhost:3010/api/getWinningPercentage?prod=${prod}&numChamps=${num}`
-        )
-      ).json();
+      const req1 = await fetch(
+        `http://localhost:3010/api/getWinningPercentage?prod=${prod}&numChamps=${num}`
+      );
+      const req2 = await fetch(
+        `http://localhost:3010/api/nextBestChamps?prod=${prod}&numChamps=${num}`
+      );
 
       const now = new Date().getTime();
       const minDelay = 500;
-      if (now - startMs < minDelay) {
-        await setTimeoutAsync(minDelay - (now - startMs));
+      interface IFirstResult {
+        winPercentage: number;
+        games: number;
       }
 
-      setWinPercentage(response["winPercentage"]);
-      setNumGames(response["games"]);
-      setRequestInProgress(false);
-      setShowRandomNumbers(false);
+      interface ISecondResult {
+        wp: number;
+        nc: number;
+      }
+
+      try {
+        const results: [IFirstResult, ISecondResult[]] = await Promise.all([
+          req1.json(),
+          req2.json(),
+        ]);
+        if (now - startMs < minDelay) {
+          await setTimeoutAsync(minDelay - (now - startMs));
+        }
+
+        console.log(results);
+        setWinPercentage(results[0]["winPercentage"]);
+        setNumGames(results[0]["games"]);
+
+        setChampionData((cd) => {
+          let copy = [...cd!];
+          for (let f of copy) {
+            let filt = results[1].filter((x) => x.nc === f.primeid);
+            if (filt.length === 1) {
+              f.relativePercent = filt[0].wp;
+            }
+            else {
+              f.relativePercent = undefined;
+            }
+          }
+          return copy;
+        });
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setRequestInProgress(false);
+        setShowRandomNumbers(false);
+      }
     };
 
     if (teamcomp.every((val) => val === null)) {
@@ -74,6 +117,7 @@ function App() {
     } else {
       setShowRandomNumbers(true);
       setRequestInProgress(true);
+      // This is an async function call
       getNewWinningPercentage(teamcomp);
     }
   }, [teamcomp]);
@@ -117,7 +161,7 @@ function App() {
       copy[xIndex] = null;
       setTeamcomp(copy);
     }
-  };
+  }
 
   if (championData) {
     return (
@@ -142,13 +186,16 @@ function App() {
               }}
               onDrop={(i) => {
                 if (dragChampion) {
-                  const inExistingComp = teamcomp.findIndex(t => t?.internalname === dragChampion.internalname);
-                  if (inExistingComp === -1) { // Not in the existing comp, let the drop go
+                  const inExistingComp = teamcomp.findIndex(
+                    (t) => t?.internalname === dragChampion.internalname
+                  );
+                  if (inExistingComp === -1) {
+                    // Not in the existing comp, let the drop go
                     const copy = [...teamcomp];
                     copy[i] = dragChampion;
                     setTeamcomp(copy);
-                  }
-                  else if (inExistingComp !== i) { // In the existing comp somwhere else, so remove it and move it to drop spot
+                  } else if (inExistingComp !== i) {
+                    // In the existing comp somwhere else, so remove it and move it to drop spot
                     const copy = [...teamcomp];
                     const temp = copy[i];
                     copy[i] = dragChampion;
@@ -167,6 +214,7 @@ function App() {
               onDragStart={(champion: IChampionTableData) => {
                 setDragChampion(champion);
               }}
+              currentPercentage={winPercentage}
             />
           </div>
         </div>

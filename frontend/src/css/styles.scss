@@ -150,6 +150,10 @@ footer {
   }
 }
 
+._selected {
+  background-color: var(--clr-secondary-100);
+}
+
 ._champion > img {
   height: 60px;
   width: 60px;
@@ -232,4 +236,16 @@ footer {
 ._resetButton {
   width: 15ch;
   align-self: center;
+}
+
+.small {
+  font-size: smaller;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
 }

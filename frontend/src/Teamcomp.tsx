@@ -28,7 +28,7 @@ export default function Teamcomp({
   const disabled = champions.filter(x => x == null).length === 5;
   return (
     <div className="_selectedChampions">
-      <div className="alert-low">Results are role-agnostic.</div>
+      <div className="alert-low">Win percent is not affected by lane.</div>
       {roles.map((r, i) => {
         if (champions[i]) {
           return (
