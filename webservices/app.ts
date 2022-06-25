@@ -85,7 +85,7 @@ app.get("/api/nextBestChamps", async function (req, res) {
   const dbToQuery = ["doubles", "triples", "quads", "quints"][numChamps - 1];
   const query = {
     text:
-      "SELECT CAST(wins as float) / (wins + losses) as wp, CAST(primeid / $1 as integer) as nc " +
+      "SELECT CAST(wins * 100 as float) / (wins + losses) as winpercentage, CAST(primeid / $1 as integer) as primeid, (wins + losses) as numgames " +
       `FROM ${dbToQuery} ` +
       "WHERE primeid % $1 = 0 AND (wins + losses) > 30",
     values: [prod],

@@ -50,6 +50,24 @@ enum ChampionTags {
     Fighter = "Fighter",
 }
 
+export interface INextBestChamps {
+  primeid: number;
+  winpercentage: number;
+  numgames: number;
+}
+
+export interface IScreenData {
+  winPercentage?: number;
+  numGames?: number;
+  nextBestChamps?: INextBestChamps[];
+}
+
+export interface IGetWinningPercentageResult {
+  winPercentage: number;
+  games: number;
+}
+
+
 interface IChampionDataImage {
   full: string;
   sprite: string;

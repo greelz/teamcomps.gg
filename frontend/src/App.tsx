@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./css/styles.css";
 import "./App.css";
 import Teamcomp from "./Teamcomp";
 import * as f from "./FakeWebServer";
-import { IChampionTableData } from "./Interfaces";
+import {
+  IChampionTableData,
+  IGetWinningPercentageResult,
+  INextBestChamps,
+  IScreenData,
+} from "./Interfaces";
 import UseFetchService from "./UseFetchService";
 import RandomNumberJumbler from "./RandomNumberJumbler";
-import ChampionsList, { IChampionListChamp } from "./ChampionsList";
-import { loadavg } from "os";
+import ChampionsList from "./ChampionsList";
 
 async function setTimeoutAsync(ms: number): Promise<void> {
   return new Promise((res) => {
@@ -17,7 +21,26 @@ async function setTimeoutAsync(ms: number): Promise<void> {
   });
 }
 
+const deepCopy = (existingMap: Map<any, any> | null | undefined) => {
+  if (!existingMap) return new Map();
+  return new Map(JSON.parse(JSON.stringify(Array.from(existingMap))));
+};
+
+const memoize = (fn: any) => {
+  let cache: any = {};
+  return (...args: any) => {
+    let s = JSON.stringify(args);
+    return s in cache ? cache[s] : (cache[s] = fn(...args));
+  };
+};
+
+interface ICache {
+  [x: string]: boolean
+}
+
 function App() {
+
+  const cache = useRef<ICache>({});
   // State
   const [teamcomp, setTeamcomp] = useState<Array<IChampionTableData | null>>([
     null,
@@ -27,98 +50,81 @@ function App() {
     null,
   ]);
 
+  const currentTeampcompPrimeId = teamcomp.reduce((total, curr) => {
+    return (curr?.primeid || 1) * total;
+  }, 1);
+
+  const [data, setData] = useState<Map<number, IScreenData | null>>();
+
+  const currentWinPercentage = data?.get(
+    currentTeampcompPrimeId
+  )?.winPercentage;
+
+  const currentNumGames = data?.get(currentTeampcompPrimeId)?.numGames;
+
+  const currentNextBestChamps = data?.get(
+    currentTeampcompPrimeId
+  )?.nextBestChamps;
+
+  // Data is a dictionary of primeId (of teamcomp) -> IScreenData
   const [showRandomNumbers, setShowRandomNumbers] = useState(false);
   const [requestInProgress, setRequestInProgress] = useState(false);
-  const [winPercentage, setWinPercentage] = useState<number>(50.0);
-  const [numGames, setNumGames] = useState(0);
   const [dragChampion, setDragChampion] = useState<IChampionTableData | null>(
     null
   );
-  const [championData, setChampionData] = useState<
-    IChampionListChamp[] | null
-  >();
 
-  useEffect(() => {
-    const load = async () => {
-      setChampionData(await f.getChampionData());
-    };
-    load();
-  }, []);
+  const championData: IChampionTableData[] = UseFetchService({
+    dataLoadAsyncCall: f.getChampionData,
+  });
 
+  // Main useEffect --> when teamcomp changes, set data for the entire screen
   useEffect(() => {
-    const getNewWinningPercentage = async (
-      comp: (IChampionTableData | null)[]
-    ): Promise<void> => {
-      let prod = 1;
-      let num = 0;
-      for (const champ of comp) {
-        if (champ) {
-          prod *= champ.primeid || 1;
-          num += 1;
-        }
-      }
-      const startMs = new Date().getTime();
+    const loadWinningPercentage = async (prod: number, num: number) => {
+      if (cache.current[`${prod}perc`]) return;
       const req1 = await fetch(
         `http://localhost:3010/api/getWinningPercentage?prod=${prod}&numChamps=${num}`
       );
+      const result: IGetWinningPercentageResult = await req1.json();
+      setData((d: Map<number, IScreenData | null> | undefined) => {
+        const x = deepCopy(d);
+        if (!x) d = new Map<number, IScreenData | null>();
+        x.set(prod, {
+          numGames: result.games,
+          winPercentage: result.winPercentage,
+          nextBestChamps: x.get(prod)?.nextBestChamps,
+        });
+        cache.current[`${prod}perc`] = true;
+        return x;
+      });
+    };
+
+    const loadNextBestChamps = async (prod: number, num: number) => {
+      if (cache.current[`${prod}bc`]) return;
       const req2 = await fetch(
         `http://localhost:3010/api/nextBestChamps?prod=${prod}&numChamps=${num}`
       );
-
-      const now = new Date().getTime();
-      const minDelay = 500;
-      interface IFirstResult {
-        winPercentage: number;
-        games: number;
-      }
-
-      interface ISecondResult {
-        wp: number;
-        nc: number;
-      }
-
-      try {
-        const results: [IFirstResult, ISecondResult[]] = await Promise.all([
-          req1.json(),
-          req2.json(),
-        ]);
-        if (now - startMs < minDelay) {
-          await setTimeoutAsync(minDelay - (now - startMs));
-        }
-
-        console.log(results);
-        setWinPercentage(results[0]["winPercentage"]);
-        setNumGames(results[0]["games"]);
-
-        setChampionData((cd) => {
-          let copy = [...cd!];
-          for (let f of copy) {
-            let filt = results[1].filter((x) => x.nc === f.primeid);
-            if (filt.length === 1) {
-              f.relativePercent = filt[0].wp;
-            }
-            else {
-              f.relativePercent = undefined;
-            }
-          }
-          return copy;
+      const result: INextBestChamps[] = await req2.json();
+      setData((d: Map<number, IScreenData | null> | undefined) => {
+        const x = deepCopy(d);
+        x.set(prod, {
+          nextBestChamps: result,
+          numGames: x.get(prod)?.numGames,
+          winPercentage: x.get(prod)?.winPercentage,
         });
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setRequestInProgress(false);
-        setShowRandomNumbers(false);
-      }
+        cache.current[`${prod}bc`] = true;
+        return x;
+      });
     };
 
-    if (teamcomp.every((val) => val === null)) {
-      setNumGames(0);
-      setWinPercentage(50);
-    } else {
-      setShowRandomNumbers(true);
-      setRequestInProgress(true);
-      // This is an async function call
-      getNewWinningPercentage(teamcomp);
+    const prod = teamcomp.reduce((total, curr) => {
+      return total * (curr?.primeid || 1);
+    }, 1);
+
+    if (prod > 1) {
+      const num = teamcomp.filter((x) => x !== null).length;
+
+      loadWinningPercentage(prod, num);
+      loadNextBestChamps(prod, num);
     }
   }, [teamcomp]);
 
@@ -172,10 +178,10 @@ function App() {
             <RandomNumberJumbler
               minValue={10}
               maxValue={100}
-              actualValue={winPercentage}
+              actualValue={currentWinPercentage}
               jumble={showRandomNumbers}
             />
-            <span>({numGames} games)</span>
+            <span>({currentNumGames} games)</span>
           </div>
           <div className="_container">
             <Teamcomp
@@ -214,7 +220,8 @@ function App() {
               onDragStart={(champion: IChampionTableData) => {
                 setDragChampion(champion);
               }}
-              currentPercentage={winPercentage}
+              nextBestChampData={currentNextBestChamps}
+              currentPercentage={currentWinPercentage}
             />
           </div>
         </div>

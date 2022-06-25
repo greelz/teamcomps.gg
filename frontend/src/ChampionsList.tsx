@@ -1,23 +1,22 @@
 import React, { ChangeEvent, useState } from "react";
 import Champion from "./Champion";
-import { IChampionTableData } from "./Interfaces";
-
-export interface IChampionListChamp extends IChampionTableData {
-  relativePercent?: number;
-}
+import { IChampionTableData, INextBestChamps } from "./Interfaces";
 
 interface IChampionsListProps {
-  championData: IChampionListChamp[];
+  championData: IChampionTableData[];
   handleChampionClick: (champion: IChampionTableData) => void;
   onDragStart: (championName: IChampionTableData) => void,
-  currentPercentage?: number
+  currentPercentage?: number,
+  nextBestChampData?: INextBestChamps[],
 }
 
 export default function ChampionsList({
   championData,
   handleChampionClick,
   onDragStart,
-  currentPercentage
+  currentPercentage,
+  nextBestChampData,
+
 }: IChampionsListProps) {
 
   function isInFilters(element: IChampionTableData): boolean {
@@ -60,7 +59,7 @@ export default function ChampionsList({
   function handleSortSelectionChange(e: ChangeEvent<HTMLSelectElement>) {
     if (e.target.value === 'Name') setSortSelection(() => nameSort);
     else if (e.target.value === 'Popularity') setSortSelection(() => popularitySort);
-    else if (e.target.value === 'Relative') setSortSelection(() => relativePercSort);
+    // else if (e.target.value === 'Relative') setSortSelection(() => relativePercSort);
   }
 
   const nameSort = (a: IChampionTableData, b: IChampionTableData): number => {
@@ -69,22 +68,22 @@ export default function ChampionsList({
     return 0;
   }
 
-  const popularitySort = (a: IChampionListChamp, b: IChampionListChamp): number => {
+  const popularitySort = (a: IChampionTableData, b: IChampionTableData): number => {
     return a.popularity - b.popularity;
   }
 
-  const relativePercSort = (a: IChampionListChamp, b: IChampionListChamp): number => {
-    if (a.relativePercent && b.relativePercent) {
-      return b.relativePercent - a.relativePercent;
-    }
-    else if (a.relativePercent) {
-      return -100;
-    }
-    else if (b.relativePercent) {
-      return 100;
-    }
-    return 0;
-  }
+  // const relativePercSort = (a: IChampionListChamp, b: IChampionListChamp): number => {
+  //   if (a.relativePercent && b.relativePercent) {
+  //     return b.relativePercent - a.relativePercent;
+  //   }
+  //   else if (a.relativePercent) {
+  //     return -100;
+  //   }
+  //   else if (b.relativePercent) {
+  //     return 100;
+  //   }
+  //   return 0;
+  // }
 
   const [textInFilter, setTextInFilter] = useState<string>(
     ""
@@ -135,6 +134,7 @@ export default function ChampionsList({
                 {...element}
                 clickHandler={() => handleChampionClick(element)}
                 currentPercentage={currentPercentage}
+                nextWinningPercentage={nextBestChampData?.find(d => d.primeid === element.primeid)?.winpercentage}
               />
             );
           }

@@ -1,5 +1,4 @@
 import React, { MouseEventHandler } from "react";
-import { IChampionListChamp } from "./ChampionsList";
 import { IChampionTableData } from "./Interfaces";
 
 function importAll(r: __WebpackModuleApi.RequireContext) {
@@ -13,21 +12,20 @@ const images = importAll(
   require.context("./assets/champions/120x120", false, /\.(png)$/)
 );
 
-export interface ChampionProps extends IChampionListChamp {
+export interface ChampionProps extends IChampionTableData {
   clickHandler?: MouseEventHandler<HTMLDivElement>;
   onDragStart: (championName: IChampionTableData) => void;
   currentPercentage?: number;
+  nextWinningPercentage?: number
 }
 
 export default function Champion(props: ChampionProps) {
   let showPercent = false;
   let perc: number = 0;
   let spanClass = "";
-  console.log(props.relativePercent);
-  console.log(props.currentPercentage);
-  if (props.relativePercent && props.currentPercentage) {
+  if (props.nextWinningPercentage && props.currentPercentage) {
     showPercent = true;
-    perc = ((props.relativePercent * 100 - props.currentPercentage));
+    perc = ((props.nextWinningPercentage - props.currentPercentage));
     if (perc <= -2) {
       spanClass = 'red';
     }
