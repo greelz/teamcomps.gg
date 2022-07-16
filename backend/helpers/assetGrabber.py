@@ -6,17 +6,17 @@ from math import ceil, sqrt
 import psycopg2
 from secrets import conn_string
 
-def add_champion(internalName, id, prettyName, primeId, title, popularity):
+def add_champion(internalName, id, prettyName, primeId, title):
     with psycopg2.connect(conn_string) as conn:
         # Open a cursor to perform database operations
         with conn.cursor() as cur:
             # Execute a command: this creates a new table
             cur.execute("""
-                INSERT INTO champions (id, primeid, internalname, prettyname, title, popularity) 
-                VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (id)
-                DO UPDATE SET (internalname, prettyname, title, popularity) = (EXCLUDED.internalname, EXCLUDED.prettyname, EXCLUDED.title, EXCLUDED.popularity)
+                INSERT INTO champions (id, primeid, internalname, prettyname, title) 
+                VALUES (%s, %s, %s, %s, %s) ON CONFLICT (id)
+                DO UPDATE SET (internalname, prettyname, title) = (EXCLUDED.internalname, EXCLUDED.prettyname, EXCLUDED.title)
             """, 
-                (id, primeId, internalName, prettyName, title, popularity))
+                (id, primeId, internalName, prettyName, title))
 
             # Make the changes to the database persistent
             conn.commit()
@@ -105,7 +105,6 @@ def update_champions_in_db(champion_data):
         
         c = existing_champs[id_lower]
         # These shouldn't change...
-        assert(c['internalname'] == id)
         assert(c['id'] == int(key))
         assert(c['primeid'] == primeid)
         assert(c['prettyname'] == name)
@@ -113,7 +112,7 @@ def update_champions_in_db(champion_data):
         popularity = champion_popularity[id_lower]
 
         # But we'll still call add_champion to update the titles and popularity
-        add_champion(id, key, name, primeid, title, popularity)
+        add_champion(id, key, name, primeid, title)
 
 
 def is_prime(val: int):
@@ -138,6 +137,7 @@ def main():
     base_url = 'http://ddragon.leagueoflegends.com/cdn/{}/img/champion/CHAMPIONNAME.png'.format(curr_patch)
     champion_data = get_champion_images(curr_patch, base_url)
     update_champions_in_db(champion_data)
+    print(get_champion_popularity())
 
 if __name__ == "__main__":
     main()
