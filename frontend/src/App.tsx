@@ -1,45 +1,38 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./css/styles.css";
-import "./App.css";
 import Teamcomp from "./Teamcomp";
 import * as f from "./FakeWebServer";
 import {
+  IChampionListElem,
   IChampionTableData,
   IGetWinningPercentageResult,
   INextBestChamps,
   IScreenData,
 } from "./Interfaces";
-import UseFetchService from "./UseFetchService";
 import RandomNumberJumbler from "./RandomNumberJumbler";
 import ChampionsList from "./ChampionsList";
+import { baseUrl } from "./Interfaces";
 
 async function setTimeoutAsync(ms: number): Promise<void> {
   return new Promise((res) => {
     setTimeout(() => {
       res();
-    }, ms);
+    }, Math.max(0, ms));
   });
 }
+
+const FORCED_DELAY = 50;
 
 const deepCopy = (existingMap: Map<any, any> | null | undefined) => {
   if (!existingMap) return new Map();
   return new Map(JSON.parse(JSON.stringify(Array.from(existingMap))));
 };
 
-const memoize = (fn: any) => {
-  let cache: any = {};
-  return (...args: any) => {
-    let s = JSON.stringify(args);
-    return s in cache ? cache[s] : (cache[s] = fn(...args));
-  };
-};
-
 interface ICache {
-  [x: string]: boolean
+  [x: string]: boolean;
 }
 
 function App() {
-
   const cache = useRef<ICache>({});
   // State
   const [teamcomp, setTeamcomp] = useState<Array<IChampionTableData | null>>([
@@ -60,31 +53,38 @@ function App() {
     currentTeampcompPrimeId
   )?.winPercentage;
 
-  const currentNumGames = data?.get(currentTeampcompPrimeId)?.numGames;
-
-  const currentNextBestChamps = data?.get(
-    currentTeampcompPrimeId
-  )?.nextBestChamps;
+  const currentNumGames = data
+    ?.get(currentTeampcompPrimeId)
+    ?.numGames?.toLocaleString();
 
   // Data is a dictionary of primeId (of teamcomp) -> IScreenData
-  const [showRandomNumbers, setShowRandomNumbers] = useState(false);
   const [requestInProgress, setRequestInProgress] = useState(false);
   const [dragChampion, setDragChampion] = useState<IChampionTableData | null>(
     null
   );
 
-  const championData: IChampionTableData[] = UseFetchService({
-    dataLoadAsyncCall: f.getChampionData,
-  });
+  useEffect(() => {
+    const loadChampionData = async () => {
+      setChampionData(await f.getChampionData());
+    };
+
+    loadChampionData();
+  }, []);
+
+  const [championData, setChampionData] = useState<IChampionListElem[] | null>(
+    null
+  );
 
   // Main useEffect --> when teamcomp changes, set data for the entire screen
   useEffect(() => {
     const loadWinningPercentage = async (prod: number, num: number) => {
       if (cache.current[`${prod}perc`]) return;
+      const start = Date.now();
       const req1 = await fetch(
-        `http://localhost:3010/api/getWinningPercentage?prod=${prod}&numChamps=${num}`
+        `http://${baseUrl}:3010/api/getWinningPercentage?prod=${prod}&numChamps=${num}`
       );
       const result: IGetWinningPercentageResult = await req1.json();
+      await setTimeoutAsync(FORCED_DELAY - (Date.now() - start));
       setData((d: Map<number, IScreenData | null> | undefined) => {
         const x = deepCopy(d);
         if (!x) d = new Map<number, IScreenData | null>();
@@ -98,24 +98,6 @@ function App() {
       });
     };
 
-    const loadNextBestChamps = async (prod: number, num: number) => {
-      if (cache.current[`${prod}bc`]) return;
-      const req2 = await fetch(
-        `http://localhost:3010/api/nextBestChamps?prod=${prod}&numChamps=${num}`
-      );
-      const result: INextBestChamps[] = await req2.json();
-      setData((d: Map<number, IScreenData | null> | undefined) => {
-        const x = deepCopy(d);
-        x.set(prod, {
-          nextBestChamps: result,
-          numGames: x.get(prod)?.numGames,
-          winPercentage: x.get(prod)?.winPercentage,
-        });
-        cache.current[`${prod}bc`] = true;
-        return x;
-      });
-    };
-
     const prod = teamcomp.reduce((total, curr) => {
       return total * (curr?.primeid || 1);
     }, 1);
@@ -123,8 +105,10 @@ function App() {
     if (prod > 1) {
       const num = teamcomp.filter((x) => x !== null).length;
 
-      loadWinningPercentage(prod, num);
-      loadNextBestChamps(prod, num);
+      setRequestInProgress(true);
+      loadWinningPercentage(prod, num).then(() => {
+        setRequestInProgress(false);
+      });
     }
   }, [teamcomp]);
 
@@ -141,6 +125,8 @@ function App() {
     if (champion && copy.indexOf(champion) === -1 && copy.indexOf(null) > -1) {
       // Make sure there's a spot to fill
       // Find the spot to put this champion
+
+      // Bug here -- ensure we use what the person has selected, first
       const laneAssignments = [
         champion.toplaner,
         champion.jungler,
@@ -178,10 +164,17 @@ function App() {
             <RandomNumberJumbler
               minValue={10}
               maxValue={100}
-              actualValue={currentWinPercentage}
-              jumble={showRandomNumbers}
+              actualValue={currentWinPercentage || 0}
+              jumble={requestInProgress}
+              className="_winPercentage"
             />
-            <span>({currentNumGames} games)</span>
+            <RandomNumberJumbler
+              minValue={10}
+              maxValue={1000}
+              actualValue={currentNumGames || 0}
+              jumble={requestInProgress}
+              className="_numGames"
+            />
           </div>
           <div className="_container">
             <Teamcomp
@@ -220,7 +213,6 @@ function App() {
               onDragStart={(champion: IChampionTableData) => {
                 setDragChampion(champion);
               }}
-              nextBestChampData={currentNextBestChamps}
               currentPercentage={currentWinPercentage}
             />
           </div>

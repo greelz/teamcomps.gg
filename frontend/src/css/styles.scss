@@ -65,11 +65,19 @@ footer {
   justify-content: center;
   position: relative;
 
-  span {
+  ._winPercentage::after {
+    content: '%';
+  }
+
+  ._numGames {
     position: absolute;
     right: 0;
     top: 0;
     font-size: small;
+
+    &::after {
+      content: ' games';
+    }
   }
 }
 

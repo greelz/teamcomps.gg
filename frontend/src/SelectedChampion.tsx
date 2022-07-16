@@ -17,7 +17,7 @@ function importAll(r: __WebpackModuleApi.RequireContext) {
 }
 
 const championImages = importAll(
-  require.context("./assets/champions/120x120", false, /\.(png)$/)
+  require.context("./assets/champions", false, /\.(png)$/)
 );
 
 export default function SelectedChampion(props: ISelectedChampionProps) {

@@ -318,11 +318,17 @@ footer {
   justify-content: center;
   position: relative;
 }
-._winPercentContainer span {
+._winPercentContainer ._winPercentage::after {
+  content: "%";
+}
+._winPercentContainer ._numGames {
   position: absolute;
   right: 0;
   top: 0;
   font-size: small;
+}
+._winPercentContainer ._numGames::after {
+  content: " games";
 }
 
 ._championList {

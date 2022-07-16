@@ -9,7 +9,7 @@ function importAll(r: __WebpackModuleApi.RequireContext) {
   return imagesDictionary;
 }
 const images = importAll(
-  require.context("./assets/champions/120x120", false, /\.(png)$/)
+  require.context("./assets/champions", false, /\.(png)$/)
 );
 
 export interface ChampionProps extends IChampionTableData {

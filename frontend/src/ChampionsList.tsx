@@ -1,13 +1,15 @@
 import React, { ChangeEvent, useState } from "react";
 import Champion from "./Champion";
-import { IChampionTableData, INextBestChamps } from "./Interfaces";
+import {
+  IChampionListElem,
+  IChampionTableData,
+} from "./Interfaces";
 
 interface IChampionsListProps {
-  championData: IChampionTableData[];
+  championData: IChampionListElem[];
   handleChampionClick: (champion: IChampionTableData) => void;
-  onDragStart: (championName: IChampionTableData) => void,
-  currentPercentage?: number,
-  nextBestChampData?: INextBestChamps[],
+  onDragStart: (championName: IChampionTableData) => void;
+  currentPercentage?: number;
 }
 
 export default function ChampionsList({
@@ -15,10 +17,7 @@ export default function ChampionsList({
   handleChampionClick,
   onDragStart,
   currentPercentage,
-  nextBestChampData,
-
 }: IChampionsListProps) {
-
   function isInFilters(element: IChampionTableData): boolean {
     return isInTextFilter(element) && isInLaneFilter(element);
   }
@@ -57,37 +56,43 @@ export default function ChampionsList({
   }
 
   function handleSortSelectionChange(e: ChangeEvent<HTMLSelectElement>) {
-    if (e.target.value === 'Name') setSortSelection(() => nameSort);
-    else if (e.target.value === 'Popularity') setSortSelection(() => popularitySort);
-    // else if (e.target.value === 'Relative') setSortSelection(() => relativePercSort);
+    if (e.target.value === "Name") setSortSelection(() => nameSort);
+    else if (e.target.value === "Popularity")
+      setSortSelection(() => popularitySort);
+    else if (e.target.value === "Relative")
+      setSortSelection(() => relativePercSort);
   }
 
   const nameSort = (a: IChampionTableData, b: IChampionTableData): number => {
     if (a.prettyname > b.prettyname) return 1;
     else if (a.prettyname < b.prettyname) return -1;
     return 0;
-  }
+  };
 
-  const popularitySort = (a: IChampionTableData, b: IChampionTableData): number => {
+  const popularitySort = (
+    a: IChampionTableData,
+    b: IChampionTableData
+  ): number => {
     return a.popularity - b.popularity;
-  }
+  };
 
-  // const relativePercSort = (a: IChampionListChamp, b: IChampionListChamp): number => {
-  //   if (a.relativePercent && b.relativePercent) {
-  //     return b.relativePercent - a.relativePercent;
-  //   }
-  //   else if (a.relativePercent) {
-  //     return -100;
-  //   }
-  //   else if (b.relativePercent) {
-  //     return 100;
-  //   }
-  //   return 0;
-  // }
+  const relativePercSort = (
+    a: IChampionListElem,
+    b: IChampionListElem
+  ): number => {
+    const aPerc = a.relativePercent;
+    const bPerc = b.relativePercent;
+    if (aPerc && bPerc) {
+      return bPerc - aPerc;
+    } else if (bPerc) {
+      return 1;
+    } else if (aPerc) {
+      return -1;
+    }
+    return 0;
+  };
 
-  const [textInFilter, setTextInFilter] = useState<string>(
-    ""
-  );
+  const [textInFilter, setTextInFilter] = useState<string>("");
   const [laneFilter, setLaneFilter] = useState<string | null>(null);
   const [sortSelection, setSortSelection] = useState<any>(() => nameSort); // default sort is name
 
@@ -98,7 +103,7 @@ export default function ChampionsList({
       <div className="_filters">
         <div className="_roleFilters">
           {filterButtons.map((f) => {
-            const selectedClass = laneFilter === f ? '_selected' : '';
+            const selectedClass = laneFilter === f ? "_selected" : "";
             return (
               <input
                 type="button"
@@ -129,12 +134,12 @@ export default function ChampionsList({
           if (isInFilters(element)) {
             return (
               <Champion
-              onDragStart={onDragStart}
+                onDragStart={onDragStart}
                 key={element.internalname}
                 {...element}
                 clickHandler={() => handleChampionClick(element)}
                 currentPercentage={currentPercentage}
-                nextWinningPercentage={nextBestChampData?.find(d => d.primeid === element.primeid)?.winpercentage}
+                nextWinningPercentage={element.relativePercent}
               />
             );
           }

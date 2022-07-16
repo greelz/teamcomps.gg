@@ -19,14 +19,8 @@ def work(args):
         print('Match {} wasn\'t loaded correctly'.format(match_id))
 
 
-
-if __name__ == "__main__": 
+def main_loop(queue, tier, division, region):
     count = 0
-    region: Region = Region.EuWest
-    queue = Queue.RANKED_SOLO_5x5
-    tier = Tier.I
-    division = Division.PLATINUM
-
     for player in get_all_players_in_division(queue, tier, division, region):
         count += 1
         summoner = player.summonerName
@@ -83,3 +77,20 @@ if __name__ == "__main__":
         # Add all the games to the database
         print('Adding {} games to the database after {:.1f} seconds of multiprocessing'.format(len(games), time.time() - start))
         add_games(games)
+    
+    return count
+
+
+if __name__ == "__main__": 
+    total_count = 0
+    queue = Queue.RANKED_SOLO_5x5
+    for region in [Region.Latinamerica2]:
+        for division in [Division.DIAMOND, Division.PLATINUM]:
+            tier_count = 0
+            for tier in [Tier.IV, Tier.I]:
+                tier_count += main_loop(queue, tier, division, region)
+            
+            print('Total games for {} {}: {}'.format(division, tier, tier_count))
+            total_count += tier_count
+            print('Total games overall: {}'.format(total_count))
+

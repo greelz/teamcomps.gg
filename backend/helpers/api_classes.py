@@ -18,9 +18,10 @@ class ParticipantDto():
                     timeCCingOthers,timePlayed,totalDamageDealt,totalDamageDealtToChampions,totalDamageShieldedOnTeammates,totalDamageTaken,totalHeal,
                     totalHealsOnTeammates,totalMinionsKilled,totalTimeCCDealt,totalTimeSpentDead,totalUnitsHealed,tripleKills,trueDamageDealt,
                     trueDamageDealtToChampions,trueDamageTaken,turretKills,turretTakedowns,turretsLost,unrealKills,visionScore,visionWardsBoughtInGame,
-                    wardsKilled,wardsPlaced,win,challenges=None,eligibleForProgression=None):
+                    wardsKilled,wardsPlaced,win,challenges=None,eligibleForProgression=None,basicPings=None):
         self.assists = assists
         self.baronKills = baronKills
+        self.basicPings = basicPings
         self.bountyLevel = bountyLevel
         self.challenges = challenges
         self.champExperience = champExperience

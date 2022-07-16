@@ -2,21 +2,21 @@ export interface ILeagueData {
   type: string;
   format: string;
   version: string;
-  data: { [champion in ChampionName]: IChampionData }
+  data: { [champion in ChampionName]: IChampionData };
 }
 
 export interface IChampionTableData {
-  id: number,
-  primeid: number,
-  internalname: ChampionName,
-  prettyname: string,
-  toplaner: boolean,
-  midlaner: boolean,
-  jungler: boolean,
-  support: boolean,
-  adc: boolean,
-  title: string,
-  popularity: number // The lower the better
+  id: number;
+  primeid: number;
+  internalname: ChampionName;
+  prettyname: string;
+  toplaner: boolean;
+  midlaner: boolean;
+  jungler: boolean;
+  support: boolean;
+  adc: boolean;
+  title: string;
+  popularity: number; // The lower the better
 }
 
 export interface IChampionData {
@@ -42,18 +42,22 @@ interface IChampionDataInfo {
 }
 
 enum ChampionTags {
-    Mage = "Mage",
-    Assassin = "Assassin",
-    Marksman = "Marksman",
-    Tank = "Tank",
-    Support = "Support",
-    Fighter = "Fighter",
+  Mage = "Mage",
+  Assassin = "Assassin",
+  Marksman = "Marksman",
+  Tank = "Tank",
+  Support = "Support",
+  Fighter = "Fighter",
 }
 
 export interface INextBestChamps {
   primeid: number;
   winpercentage: number;
   numgames: number;
+}
+
+export interface IChampionListElem extends IChampionTableData {
+  relativePercent?: number;
 }
 
 export interface IScreenData {
@@ -66,7 +70,6 @@ export interface IGetWinningPercentageResult {
   winPercentage: number;
   games: number;
 }
-
 
 interface IChampionDataImage {
   full: string;
@@ -262,3 +265,5 @@ export enum ChampionName {
   Zoe = "Zoe",
   Zyra = "Zyra",
 }
+
+export const baseUrl = "teamcomp.gg";
